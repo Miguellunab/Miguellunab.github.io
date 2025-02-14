@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0" />
+    <title>Mi Primera Red Neuronal</title>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="favicon-32x32.png" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="favicon-16x16.png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap"
+      rel="stylesheet" />
+    <style>
+      /* Estilos personalizados */
+      body {
+        margin: 0;
+        font-family: 'Roboto Mono', monospace;
+        background: #f4f4f9;
+        color: #333;
+        overflow-x: hidden;
+      }
+
+      h1,
+      h2,
+      h3 {
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: #2c3e50;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        text-align: center;
+      }
+
+      header {
+        padding: 50px 20px;
+        background: #ffffff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      header img {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        border: 2px solid #a8dadc;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .form-range {
+        width: 100%;
+        accent-color: #a8dadc;
+      }
+
+      #resultado {
+        margin-top: 20px;
+        font-size: 1.5rem;
+        color: #1d3557;
+      }
+
+      .btn-reset {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background: #a8dadc;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background 0.3s ease;
+      }
+
+      .btn-reset:hover {
+        background: #457b9d;
+      }
+
+      footer {
+        padding: 20px;
+        background: #f4f4f9;
+        text-align: center;
+        margin-top: 50px;
+        border-top: 1px solid #ddd;
+      }
+
+      footer p {
+        font-size: 0.9rem;
+        color: #666;
+      }
+
+      .card {
+        background: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px 0;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .card h2 {
+        margin-bottom: 10px;
+        color: #1d3557;
+      }
+
+      .card p {
+        font-size: 0.9rem;
+        line-height: 1.5;
+        color: #444;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <img
+          src="pixelart_miguel.png"
+          alt="Pixelar de Miguel" />
+        <h1>Mi Primera Red Neuronal</h1>
+        <p>
+          Explora cómo funciona una red neuronal simple para convertir grados
+          Celsius a Fahrenheit.
+        </p>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <div class="card">
+          <h2>Experimenta</h2>
+          <p>
+            Ajusta el valor de grados Celsius y observa cómo la red neuronal
+            predice su equivalente en Fahrenheit.
+          </p>
+          <form>
+            <div class="mb-3">
+              <label
+                for="celsius"
+                class="form-label"
+                >Grados Celsius: <span id="lbl-celsius">0</span></label
+              >
+              <input
+                type="range"
+                class="form-range"
+                min="-200"
+                max="200"
+                id="celsius"
+                oninput="cambiarCelsius();" />
+              <div class="form-text">
+                Desliza para ajustar el valor de grados Celsius.
+              </div>
+            </div>
+            <div class="mb-3">
+              <label
+                for="resultado"
+                class="form-label"
+                >Resultado</label
+              >
+              <div id="resultado">
+                0 grados Celsius son 32 grados Fahrenheit
+              </div>
+            </div>
+            <button
+              type="button"
+              class="btn-reset"
+              onclick="resetCelsius();">
+              Restablecer a 0
+            </button>
+          </form>
+        </div>
+
+        <div class="card">
+          <h2>Detalles Técnicos</h2>
+          <p>
+            Este proyecto fue generado por Miguel Lopez y utiliza Tensorflow
+            para entrenar y ejecutar una red neuronal simple. El modelo fue
+            entrenado con datos de conversión entre Celsius y Fahrenheit.
+          </p>
+          <p>
+            Puedes aprender más sobre este proyecto en, mira el videlo de la
+            cabra 🐐
+            <a
+              href="https://youtu.be/LRckH4U5ls8"
+              style="color: #457b9d"
+              >este video</a
+            >.
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="container">
+        <p>
+          &copy; 2025 Mi Primera Red Neuronal. Todos los derechos reservados.
+        </p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+    <script>
+      var modelo = null;
+
+      // Cargar modelo
+      (async () => {
+        console.log('Cargando modelo...');
+        modelo = await tf.loadLayersModel('model.json');
+        console.log('Modelo cargado...');
+      })();
+
+      function cambiarCelsius() {
+        var celsius = document.getElementById('celsius').value;
+        document.getElementById('lbl-celsius').innerHTML = celsius;
+        if (modelo != null) {
+          var tensor = tf.tensor1d([parseInt(celsius)]);
+          var prediccion = modelo.predict(tensor).dataSync();
+          prediccion = Math.round(prediccion[0]);
+          document.getElementById('resultado').innerHTML =
+            celsius +
+            ' grados Celsius son ' +
+            prediccion +
+            ' grados Fahrenheit';
+        } else {
+          document.getElementById('resultado').innerHTML =
+            'Intenta de nuevo en un momento...';
+        }
+      }
+
+      function resetCelsius() {
+        document.getElementById('celsius').value = 0;
+        document.getElementById('lbl-celsius').innerHTML = 0;
+        document.getElementById('resultado').innerHTML =
+          '0 grados Celsius son 32 grados Fahrenheit';
+      }
+    </script>
+  </body>
+</html>
