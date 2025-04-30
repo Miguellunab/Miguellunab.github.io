@@ -1,28 +1,40 @@
-<!-- filepath: /README.md -->
+# Portfolio de Miguel López
 
-# Mi Primera Red Neuronal
+![Retrato de Miguel](pixelart_miguel.png)
 
-![Pixelart de Miguel](pixelart_miguel.png)
+## 👋 Sobre Mí
 
-Este proyecto es una demostración simple de una red neuronal para convertir grados Celsius a Fahrenheit utilizando TensorFlow.js. Es ideal para quienes comienzan a explorar el aprendizaje automático y el desarrollo web interactivo.
+Soy **Miguel Ángel López Jaramillo**, estudiante de Ingeniería Mecatrónica en la Universidad Autónoma de Bucaramanga (UNAB). Mi pasión se encuentra en la intersección entre la mecatrónica, los sistemas embebidos y la inteligencia artificial.
 
-## Características
+Me especializo en:
 
-- **Conversión de Temperatura:** Ajusta el valor de grados Celsius mediante un control deslizante y observa la conversión a Fahrenheit en tiempo real.
-- **Interfaz Interactiva:** Diseño intuitivo y minimalista.
-- **Detalles Técnicos:** Información sobre el modelo y el proyecto en la sección "Detalles Técnicos".
+- Diseño y control de sistemas mecatrónicos
+- Programación de microcontroladores (ESP32, Arduino)
+- Desarrollo de aplicaciones con machine learning
+- Implementación de técnicas de control como PWM y controladores LQG
 
-## Tecnologías Utilizadas
+## 🚀 Proyectos Destacados
 
-- HTML5, CSS3 y JavaScript
-- [TensorFlow.js](https://www.tensorflow.org/js)
+### [Red Neuronal Simple](./red-neuronal-simple/)
 
-## Uso
+Una implementación sencilla pero efectiva de una red neuronal para convertir temperaturas de Celsius a Fahrenheit usando TensorFlow.js.
 
-1. **Instalación:**
+### [Clasificador de Flores](./clasificador-flores/)
 
-   Clona el repositorio en tu máquina local:
+Un clasificador de especies de flores utilizando MobileNetV2, implementado en el navegador con TensorFlow.js.
 
-   ```bash
-   git clone https://github.com/tu_usuario/mi-primera-red-neuronal.git
-   ```
+## 🛠️ Habilidades Técnicas
+
+- **Lenguajes de Programación**: C/C++ para microcontroladores, Python, JavaScript, HTML/CSS
+- **Frameworks y Bibliotecas**: TensorFlow, TensorFlow.js, Arduino
+- **Herramientas**: Git, VSCode, Proteus, MATLAB
+
+## 📬 Contacto
+
+- **Email**: [mlopez514@unab.edu.co](mailto:mlopez514@unab.edu.co)
+- **GitHub**: [Miguellunab](https://github.com/Miguellunab)
+- **LinkedIn**: [Miguel Ángel López Jaramillo](https://www.linkedin.com/in/miguel-angel-lopez-jaramillo-68a818351/)
+
+---
+
+Este portfolio es un trabajo en progreso y se actualiza regularmente con nuevos proyectos. ¡No dudes en echar un vistazo a mi código y contactarme para colaboraciones!
