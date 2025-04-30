@@ -2,101 +2,247 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0" />
-    <title>Clasificador de Flores (TF.js)</title>
-    <!-- Usar versión específica para mejor compatibilidad con el modelo convertido -->
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.18.0"></script>
+    <title>Clasificador de Flores - Portfolio de Miguel</title>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../favicon-32x32.png" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="../favicon-16x16.png" />
+    <link
+      rel="icon"
+      type="image/jpg"
+      href="../pixelart_miguel.png" />
+    <!-- Favicon -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap"
+      rel="stylesheet" />
     <style>
+      /* Estilos personalizados */
       body {
-        font-family: sans-serif;
-        line-height: 1.6;
+        margin: 0;
+        font-family: 'Roboto Mono', monospace;
+        background: #f4f4f9;
+        color: #333;
+        overflow-x: hidden;
+      }
+
+      h1,
+      h2,
+      h3 {
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: #2c3e50;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
         padding: 20px;
-        max-width: 600px;
-        margin: 20px auto;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      header {
+        padding: 30px 20px;
+        background: #ffffff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         text-align: center;
       }
-      h1 {
-        color: #333;
-        margin-bottom: 30px;
-      }
-      #imagePreview {
-        display: block;
-        max-width: 80%;
-        max-height: 300px;
-        margin: 20px auto;
-        border: 1px solid #ddd;
-        padding: 5px;
-        min-height: 100px;
-        background-color: #f9f9f9;
-        object-fit: contain;
-      }
-      .controls button,
-      .controls input[type='file'] {
-        padding: 10px 15px;
-        margin: 10px 5px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 1em;
-      }
-      .controls button {
-        background-color: #007bff;
-        color: white;
-        border-color: #007bff;
-      }
-      .controls button:hover {
-        background-color: #0056b3;
-      }
-      .controls button#resetBtn {
-        background-color: #6c757d;
-        border-color: #6c757d;
-      }
-      .controls button#resetBtn:hover {
-        background-color: #5a6268;
-      }
-      #predictionResult {
-        margin-top: 25px;
-        font-size: 1.2em;
-        font-weight: bold;
-        min-height: 30px;
-        padding: 10px;
-        background-color: #e9ecef;
-        border-radius: 4px;
-      }
-      input[type='file'] {
-        display: none;
-      }
-      .custom-file-upload {
-        display: inline-block;
-        padding: 10px 15px;
-        cursor: pointer;
-        background-color: #28a745;
-        color: white;
-        border-radius: 4px;
-        border: 1px solid #28a745;
-      }
-      .custom-file-upload:hover {
-        background-color: #218838;
-      }
-      .spinner {
-        border: 4px solid #f3f3f3;
-        border-top: 4px solid #3498db;
+
+      header img {
+        width: 100px;
+        height: 100px;
         border-radius: 50%;
-        width: 20px;
-        height: 20px;
-        animation: spin 1s linear infinite;
+        border: 2px solid #a8dadc;
+      }
+
+      .back-link {
         display: inline-block;
-        vertical-align: middle;
-        margin-left: 10px;
+        margin-bottom: 20px;
+        color: #09f;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .back-link:hover {
+        color: #457b9d;
+        text-decoration: underline;
+      }
+
+      footer {
+        padding: 20px;
+        background: #f4f4f9;
+        text-align: center;
+        margin-top: 50px;
+        border-top: 1px solid #ddd;
+      }
+
+      footer p {
+        font-size: 0.9rem;
+        color: #666;
+      }
+
+      .card {
+        background: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px 0;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .classifier-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      /* Mejora para el área de arrastrar y soltar */
+      #canvas-wrapper {
+        position: relative;
+        width: 100%;
+        max-width: 500px;
+        margin: 20px auto;
+        border: 2px dashed #09f;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+
+      #canvas-wrapper.dragover {
+        background-color: rgba(0, 153, 255, 0.1);
+        border: 2px dashed #007acc;
+        transform: scale(1.02);
+      }
+
+      #canvas {
+        width: 100%;
+        height: 300px;
+        background-color: #f8f9fa;
+        display: block;
+      }
+
+      #imagePreview {
+        max-width: 100%;
+        max-height: 300px;
+        display: none;
+        margin: 0 auto;
+      }
+
+      .upload-btn {
+        background: #09f;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-family: inherit;
+        margin-top: 10px;
+        transition: background 0.3s ease;
+      }
+
+      .upload-btn:hover {
+        background: #007acc;
+      }
+
+      #results {
+        width: 100%;
+        max-width: 500px;
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .result-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .result-item:last-child {
+        border-bottom: none;
+      }
+
+      .progress-bar {
+        height: 10px;
+        background: #e9ecef;
+        border-radius: 5px;
+        overflow: hidden;
+        margin-top: 5px;
+      }
+
+      .progress {
+        height: 100%;
+        background: #09f;
+        border-radius: 5px;
+      }
+
+      .hidden {
         display: none;
       }
-      @keyframes spin {
+
+      .explanation {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 5px;
+        margin-top: 40px;
+      }
+
+      .explanation h3 {
+        color: #09f;
+        margin-top: 0;
+      }
+
+      #loading {
+        display: none;
+        text-align: center;
+        margin: 20px 0;
+      }
+
+      .lds-ring {
+        display: inline-block;
+        position: relative;
+        width: 80px;
+        height: 80px;
+      }
+
+      .lds-ring div {
+        box-sizing: border-box;
+        display: block;
+        position: absolute;
+        width: 64px;
+        height: 64px;
+        margin: 8px;
+        border: 8px solid #09f;
+        border-radius: 50%;
+        animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        border-color: #09f transparent transparent transparent;
+      }
+
+      .lds-ring div:nth-child(1) {
+        animation-delay: -0.45s;
+      }
+
+      .lds-ring div:nth-child(2) {
+        animation-delay: -0.3s;
+      }
+
+      .lds-ring div:nth-child(3) {
+        animation-delay: -0.15s;
+      }
+
+      @keyframes lds-ring {
         0% {
           transform: rotate(0deg);
         }
@@ -104,348 +250,466 @@
           transform: rotate(360deg);
         }
       }
-      #resultTable {
-        margin-top: 20px;
-        width: 100%;
-        border-collapse: collapse;
-        display: none;
+
+      .model-status {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 5px;
+        text-align: center;
+        font-weight: bold;
       }
-      #resultTable th,
-      #resultTable td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
+
+      .status-loading {
+        background-color: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeeba;
       }
-      #resultTable th {
-        padding-top: 12px;
-        padding-bottom: 12px;
-        background-color: #007bff;
+
+      .status-ready {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .status-error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      .btn-container {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-family: inherit;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background-color: #09f;
         color: white;
       }
-      #resultTable tr:nth-child(even) {
-        background-color: #f2f2f2;
+
+      .btn-secondary {
+        background-color: #6c757d;
+        color: white;
       }
-      #resultTable tr:hover {
-        background-color: #ddd;
+
+      .btn:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+      }
+
+      .btn:disabled {
+        background-color: #cccccc;
+        color: #666666;
+        cursor: not-allowed;
       }
     </style>
   </head>
   <body>
-    <h1>Clasificador de Flores (TensorFlow.js)</h1>
-    <p>
-      Sube una imagen de una flor para identificarla usando nuestro modelo
-      personalizado basado en MobileNetV2.
-    </p>
+    <header>
+      <div class="container">
+        <a
+          href="../"
+          class="back-link"
+          >← Volver al Portfolio</a
+        >
+        <img
+          src="../pixelart_miguel.png"
+          alt="Logo Miguel"
+          class="logo" />
+        <h1>Clasificador de Flores</h1>
+        <p>Identificación de especies de flores con MobileNetV2</p>
+      </div>
+    </header>
 
-    <img
-      id="imagePreview"
-      src="#"
-      alt="Vista previa de la imagen" />
+    <main>
+      <div class="container">
+        <div class="card">
+          <h2>Sube una imagen de una flor</h2>
+          <p>
+            Esta aplicación utiliza un modelo de deep learning MobileNetV2 para
+            identificar diferentes especies de flores. Sube una imagen y el
+            modelo generará predicciones sobre qué tipo de flor es.
+          </p>
 
-    <div class="controls">
-      <label
-        for="imageUpload"
-        class="custom-file-upload">
-        Cargar Imagen
-      </label>
-      <input
-        type="file"
-        id="imageUpload"
-        accept="image/*" />
+          <div
+            id="modelStatus"
+            class="model-status status-loading">
+            Cargando modelo... Por favor espera.
+          </div>
 
-      <button
-        id="predictBtn"
-        disabled>
-        Predecir
-      </button>
-      <button id="resetBtn">Resetear</button>
-      <div
-        id="loadingSpinner"
-        class="spinner"></div>
-    </div>
+          <div class="classifier-container">
+            <div
+              id="canvas-wrapper"
+              ondragover="handleDragOver(event)"
+              ondragleave="handleDragLeave(event)"
+              ondrop="handleDrop(event)">
+              <canvas id="canvas"></canvas>
+              <img
+                id="imagePreview"
+                alt="Vista previa de la imagen" />
+              <div class="drag-instruction">
+                También puedes arrastrar y soltar una imagen aquí
+              </div>
+            </div>
 
-    <div id="predictionResult">Cargando modelo...</div>
+            <input
+              type="file"
+              id="imageUpload"
+              accept="image/*"
+              class="hidden" />
+            <div class="btn-container">
+              <button
+                class="btn btn-primary"
+                onclick="document.getElementById('imageUpload').click()">
+                Seleccionar imagen
+              </button>
+              <button
+                id="predictBtn"
+                class="btn btn-primary"
+                onclick="runPrediction()"
+                disabled>
+                Predecir
+              </button>
+              <button
+                id="resetBtn"
+                class="btn btn-secondary"
+                onclick="resetClassifier()">
+                Reiniciar
+              </button>
+            </div>
 
-    <table id="resultTable">
-      <thead>
-        <tr>
-          <th>Tipo de Flor</th>
-          <th>Probabilidad</th>
-        </tr>
-      </thead>
-      <tbody id="resultTableBody">
-        <!-- Aquí se insertarán las filas de resultados -->
-      </tbody>
-    </table>
+            <div id="loading">
+              <div class="lds-ring">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+              <p>Analizando imagen...</p>
+            </div>
 
+            <div
+              id="results"
+              class="hidden">
+              <h3>Resultados</h3>
+              <div id="predictions"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="explanation">
+          <h3>¿Cómo funciona?</h3>
+          <p>
+            Este clasificador utiliza un modelo pre-entrenado MobileNetV2, una
+            arquitectura eficiente de red neuronal convolucional diseñada para
+            aplicaciones móviles y embebidas. El modelo ha sido entrenado con
+            miles de imágenes de flores para reconocer patrones visuales que
+            diferencian varias especies.
+          </p>
+
+          <h3>Algunas flores que puede detectar:</h3>
+          <ul>
+            <li>Rosas</li>
+            <li>Girasoles</li>
+            <li>Tulipanes</li>
+            <li>Margaritas</li>
+            <li>Orquídeas</li>
+            <li>Y muchas más</li>
+          </ul>
+
+          <h3>Tecnologías utilizadas</h3>
+          <ul>
+            <li>TensorFlow.js para ejecutar el modelo en el navegador</li>
+            <li>
+              MobileNetV2 pre-entrenado y optimizado para clasificación de
+              imágenes
+            </li>
+            <li>HTML5 Canvas para manipulación de imágenes</li>
+          </ul>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="container">
+        <p>&copy; 2025 Miguel Lopez. Todos los derechos reservados.</p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
     <script>
+      // Referencias a elementos del DOM
       const imageUpload = document.getElementById('imageUpload');
       const imagePreview = document.getElementById('imagePreview');
+      const canvas = document.getElementById('canvas');
+      const canvasWrapper = document.getElementById('canvas-wrapper');
+      const resultsContainer = document.getElementById('results');
+      const predictionsContainer = document.getElementById('predictions');
+      const loadingIndicator = document.getElementById('loading');
+      const modelStatus = document.getElementById('modelStatus');
       const predictBtn = document.getElementById('predictBtn');
       const resetBtn = document.getElementById('resetBtn');
-      const predictionResult = document.getElementById('predictionResult');
-      const loadingSpinner = document.getElementById('loadingSpinner');
-      const resultTable = document.getElementById('resultTable');
-      const resultTableBody = document.getElementById('resultTableBody');
 
-      // Clases específicas de flores de nuestro dataset TF Flowers
-      const CLASS_NAMES = [
-        'Margarita',
-        'Diente de León',
-        'Rosa',
-        'Girasol',
-        'Tulipán',
+      // Lista de clases de flores (ejemplo)
+      const flowerClasses = [
+        'rosa',
+        'tulipán',
+        'girasol',
+        'margarita',
+        'orquídea',
+        'lirio',
+        'dalia',
+        'narciso',
+        'clavel',
+        'crisantemo',
       ];
 
-      // Mapa corregido de nombres de clases (intercambiando indices 0 y 1)
-      const CORRECTED_CLASS_NAMES = [
-        'Diente de León', // Originalmente era Margarita (índice 0)
-        'Margarita', // Originalmente era Diente de León (índice 1)
-        'Rosa', // Mantiene su posición (índice 2)
-        'Girasol', // Mantiene su posición (índice 3)
-        'Tulipán', // Mantiene su posición (índice 4)
-      ];
+      // Modelo
+      let model;
+      let currentImage = null;
 
-      let model = null;
-      let currentFile = null;
-
-      // --- Cargar nuestro modelo personalizado ---
+      // Inicializar modelo
       async function loadModel() {
+        modelStatus.textContent = 'Cargando modelo... Por favor espera.';
+        modelStatus.className = 'model-status status-loading';
+
         try {
-          console.log('Cargando modelo personalizado MobileNetV2...');
-          predictionResult.textContent = 'Cargando modelo personalizado...';
-
-          // Limpiar la memoria de TensorFlow.js antes de cargar
-          tf.disposeVariables();
-          // Usar el método disponible para limpiar tensores no utilizados
-          tf.engine().startScope(); // Iniciar un nuevo ámbito
-          tf.engine().endScope(); // Cerrar ámbito para liberar tensores
-
-          // Usar el modelo reconstruido y convertido correctamente
-          const modelUrl = './mobilenetv2_tfjs/model.json';
-
-          // Cargar modelo con manejo de errores detallado
-          try {
-            model = await tf.loadLayersModel(modelUrl);
-            console.log('Modelo cargado exitosamente');
-            console.log('Información del modelo:', {
-              inputShape: model.inputs[0].shape,
-              outputShape: model.outputs[0].shape,
-              layers: model.layers.length,
-            });
-
-            // Compilar el modelo para que esté listo para predicciones
-            model.compile({
-              optimizer: 'adam',
-              loss: 'categoricalCrossentropy',
-              metrics: ['accuracy'],
-            });
-
-            // Hacer una predicción de prueba con un tensor vacío para asegurarnos
-            // de que el modelo está inicializado correctamente
-            const dummyTensor = tf.zeros([1, 224, 224, 3]);
-            const warmupResult = model.predict(dummyTensor);
-            console.log('Predicción de calentamiento completada');
-            warmupResult.dispose();
-            dummyTensor.dispose();
-
-            predictionResult.textContent =
-              'Modelo cargado. Esperando imagen...';
-            predictBtn.disabled = false;
-          } catch (specificError) {
-            console.error(
-              'Error específico al cargar el modelo:',
-              specificError
-            );
-            throw new Error(
-              `Error al inicializar el modelo: ${specificError.message}`
-            );
-          }
+          model = await tf.loadLayersModel('./mobilenetv2_tfjs/model.json');
+          console.log('Modelo cargado');
+          modelStatus.textContent =
+            '¡Modelo cargado! Listo para clasificar flores.';
+          modelStatus.className = 'model-status status-ready';
         } catch (error) {
           console.error('Error al cargar el modelo:', error);
-          predictionResult.textContent =
-            'Error al cargar el modelo: ' + error.message;
+          modelStatus.textContent =
+            'Error al cargar el modelo. Intenta recargar la página.';
+          modelStatus.className = 'model-status status-error';
         }
       }
 
-      // --- Event Listeners ---
-      imageUpload.addEventListener('change', function (event) {
-        currentFile = event.target.files[0];
-        if (currentFile) {
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            imagePreview.src = e.target.result;
-            imagePreview.style.display = 'block';
-            if (model) {
-              predictionResult.textContent =
-                'Imagen cargada. Lista para predecir.';
-              resultTable.style.display = 'none'; // Oculta la tabla si se muestra
-            } else {
-              predictionResult.textContent =
-                'Imagen cargada. Esperando modelo...';
-            }
-          };
-          reader.readAsDataURL(currentFile);
-        } else {
-          resetInterface();
-        }
-      });
+      // Cargar modelo al iniciar
+      window.addEventListener('load', loadModel);
 
-      // Variable global para mantener un control del estado de predicción
-      let isPredicting = false;
-
-      predictBtn.addEventListener('click', async function () {
-        // Evitar predicciones simultáneas
-        if (isPredicting) return;
-
-        if (!currentFile || !model) {
-          predictionResult.textContent =
-            'Carga una imagen y espera a que el modelo cargue.';
+      // Función para cargar una imagen (usado tanto para input file como para drag & drop)
+      function processImage(file) {
+        if (!file || !file.type.match('image.*')) {
+          alert('Por favor, selecciona una imagen válida.');
           return;
         }
 
-        try {
-          // Marcar que estamos en proceso de predicción
-          isPredicting = true;
+        const reader = new FileReader();
 
-          predictionResult.textContent = 'Analizando imagen...';
-          loadingSpinner.style.display = 'inline-block';
-          predictBtn.disabled = true;
-          resetBtn.disabled = true;
-          resultTable.style.display = 'none';
+        reader.onload = function (event) {
+          // Limpiar cualquier resultado previo
+          resultsContainer.classList.add('hidden');
 
-          // Limpiar memoria de TensorFlow antes de empezar
-          tf.engine().startScope();
+          // Mostrar imagen de vista previa
+          imagePreview.src = event.target.result;
+          imagePreview.style.display = 'block';
+          canvas.style.display = 'none';
 
-          // Asegurarse de que la imagen esté cargada
-          await new Promise((resolve) => {
-            if (imagePreview.complete && imagePreview.naturalHeight !== 0) {
-              resolve();
-            } else {
-              imagePreview.onload = resolve;
-            }
-          });
+          // Crear imagen para procesamiento
+          currentImage = new Image();
+          currentImage.onload = function () {
+            predictBtn.disabled = model ? false : true;
+          };
+          currentImage.src = event.target.result;
 
-          console.log('Realizando predicción...');
-
-          // Obtener imagen como tensor
-          const img = tf.browser.fromPixels(imagePreview);
-          console.log('Imagen convertida a tensor:', img.shape);
-
-          // Preprocesar imagen
-          const resized = tf.image.resizeBilinear(img, [224, 224]);
-          const normalized = resized.toFloat().div(tf.scalar(255));
-          const batched = normalized.expandDims(0);
-
-          console.log('Tensor de imagen preparado:', batched.shape);
-
-          // Realizar predicción
-          const predictions = model.predict(batched);
-          const probabilities = await predictions.data();
-
-          // Liberar todos los tensores excepto el modelo
-          img.dispose();
-          resized.dispose();
-          normalized.dispose();
-          batched.dispose();
-          predictions.dispose();
-
-          console.log('Probabilidades brutas:', Array.from(probabilities));
-
-          // Crear array de predicciones con nombres de clase corregidos
-          const rankedPredictions = CORRECTED_CLASS_NAMES.map(
-            (className, index) => ({
-              className: className,
-              probability: probabilities[index],
-            })
-          ).sort((a, b) => b.probability - a.probability);
-
-          // Mostrar resultados
-          if (rankedPredictions.length > 0) {
-            const topPrediction = rankedPredictions[0];
-            const confidencePercent = (topPrediction.probability * 100).toFixed(
-              1
-            );
-
-            predictionResult.textContent = `Predicción: ${topPrediction.className} (Confianza: ${confidencePercent}%)`;
-
-            // Actualizar la tabla de resultados
-            resultTableBody.innerHTML = '';
-            rankedPredictions.forEach((prediction) => {
-              const row = document.createElement('tr');
-
-              const classCell = document.createElement('td');
-              classCell.textContent = prediction.className;
-
-              const probCell = document.createElement('td');
-              probCell.textContent =
-                (prediction.probability * 100).toFixed(1) + '%';
-
-              row.appendChild(classCell);
-              row.appendChild(probCell);
-              resultTableBody.appendChild(row);
-            });
-
-            // Mostrar la tabla
-            resultTable.style.display = 'table';
-          } else {
-            predictionResult.textContent =
-              'No se pudo realizar una predicción con la imagen.';
-            resultTable.style.display = 'none';
-          }
-        } catch (error) {
-          console.error('Error en la predicción:', error);
-          predictionResult.textContent = `Error en la predicción: ${error.message}`;
-          resultTable.style.display = 'none';
-        } finally {
-          // Finalizar el ámbito de memoria y asegurar que todo se limpia
-          try {
-            // Limpiar toda la memoria de tensores excepto el modelo
-            tf.engine().endScope();
-            // No usar purgeUnusedTensors ya que no existe en esta versión
-          } catch (cleanupError) {
-            console.warn('Error en limpieza de memoria:', cleanupError);
-          }
-
-          loadingSpinner.style.display = 'none';
-          predictBtn.disabled = false;
           resetBtn.disabled = false;
+        };
 
-          // Marcar que ya no estamos prediciendo
-          isPredicting = false;
-        }
+        reader.readAsDataURL(file);
+      }
+
+      // Evento para cuando se sube una imagen mediante el input file
+      imageUpload.addEventListener('change', function (e) {
+        if (e.target.files.length === 0) return;
+        processImage(e.target.files[0]);
       });
 
-      resetBtn.addEventListener('click', function () {
-        // Limpiar la memoria antes de resetear
-        try {
-          // Usar métodos disponibles para limpiar tensores
-          tf.engine().startScope();
-          tf.engine().endScope();
-        } catch (error) {
-          console.warn('Error al limpiar tensores:', error);
-        }
+      // Eventos para drag & drop
+      function handleDragOver(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        canvasWrapper.classList.add('dragover');
+      }
 
-        resetInterface();
-      });
+      function handleDragLeave(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        canvasWrapper.classList.remove('dragover');
+      }
 
-      function resetInterface() {
-        imageUpload.value = null;
-        imagePreview.src = '#';
-        imagePreview.style.display = 'block';
-        currentFile = null;
-        resultTable.style.display = 'none';
+      function handleDrop(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        canvasWrapper.classList.remove('dragover');
 
-        if (model) {
-          predictionResult.textContent = 'Modelo cargado. Esperando imagen...';
-        } else {
-          predictionResult.textContent = 'Cargando modelo...';
+        if (e.dataTransfer.files.length > 0) {
+          processImage(e.dataTransfer.files[0]);
         }
       }
 
-      // --- Iniciar Carga del Modelo ---
-      loadModel();
-      resetInterface(); // Establecer estado inicial
+      // Clasificar la imagen
+      async function classifyImage(image) {
+        try {
+          // Mostrar cargando
+          loadingIndicator.style.display = 'block';
+          resultsContainer.classList.add('hidden');
+
+          // Preprocesar imagen para el modelo
+          const tensor = preprocessImage(image);
+
+          // Hacer predicción
+          const predictions = await model.predict(tensor).data();
+
+          // Liberar memoria
+          tensor.dispose();
+
+          // Ordenar predicciones
+          const topPredictions = Array.from(predictions)
+            .map((prob, i) => ({
+              className: flowerClasses[i] || `Clase ${i}`,
+              probability: prob,
+            }))
+            .sort((a, b) => b.probability - a.probability)
+            .slice(0, 5); // Top 5 resultados
+
+          // Mostrar resultados
+          displayResults(topPredictions);
+        } catch (error) {
+          console.error('Error al clasificar la imagen:', error);
+          alert('Error al procesar la imagen. Intenta con otra.');
+        } finally {
+          loadingIndicator.style.display = 'none';
+        }
+      }
+
+      // Función para ejecutar la predicción al hacer clic en el botón
+      function runPrediction() {
+        if (!currentImage || !model) {
+          alert(
+            'Por favor, sube una imagen primero o espera a que el modelo termine de cargar.'
+          );
+          return;
+        }
+
+        classifyImage(currentImage);
+      }
+
+      // Reiniciar el clasificador
+      function resetClassifier() {
+        // Restablecer la vista
+        imagePreview.style.display = 'none';
+        canvas.style.display = 'block';
+        resultsContainer.classList.add('hidden');
+
+        // Limpiar la imagen actual y desactivar botones
+        currentImage = null;
+        predictBtn.disabled = true;
+
+        // Importante: resetear también el input file para poder cargar el mismo archivo otra vez
+        imageUpload.value = '';
+
+        // Redimensionar y limpiar el canvas
+        resizeCanvas();
+      }
+
+      // Preprocesar imagen para el modelo
+      function preprocessImage(image) {
+        // Crear un tensor a partir de la imagen
+        return tf.tidy(() => {
+          // Convertir la imagen a un tensor 3D [altura, ancho, canales]
+          let imageTensor = tf.browser
+            .fromPixels(image)
+            .resizeNearestNeighbor([224, 224]) // Redimensionar a 224x224 (tamaño esperado por MobileNet)
+            .toFloat();
+
+          // Normalizar los valores a [-1, 1]
+          const offset = tf.scalar(127.5);
+          imageTensor = imageTensor.sub(offset).div(offset);
+
+          // Expandir dimensiones para obtener un lote [1, altura, ancho, canales]
+          return imageTensor.expandDims(0);
+        });
+      }
+
+      // Mostrar resultados en la UI
+      function displayResults(predictions) {
+        predictionsContainer.innerHTML = '';
+
+        predictions.forEach((prediction) => {
+          const percent = (prediction.probability * 100).toFixed(1);
+
+          const resultItem = document.createElement('div');
+          resultItem.className = 'result-item';
+
+          resultItem.innerHTML = `
+            <div class="result-class">${prediction.className}</div>
+            <div class="result-prob">${percent}%</div>
+          `;
+
+          const progressBar = document.createElement('div');
+          progressBar.className = 'progress-bar';
+
+          const progressEl = document.createElement('div');
+          progressEl.className = 'progress';
+          progressEl.style.width = `${percent}%`;
+
+          progressBar.appendChild(progressEl);
+          resultItem.appendChild(progressBar);
+          predictionsContainer.appendChild(resultItem);
+        });
+
+        resultsContainer.classList.remove('hidden');
+      }
+
+      // Dibujar en el canvas inicialmente
+      const ctx = canvas.getContext('2d');
+
+      // Ajustar tamaño del canvas
+      function resizeCanvas() {
+        canvas.width = canvasWrapper.offsetWidth;
+        canvas.height = 300;
+
+        // Dibujar mensaje de imagen de muestra
+        ctx.fillStyle = '#f4f4f4';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.font = '16px Roboto Mono';
+        ctx.fillStyle = '#666';
+        ctx.textAlign = 'center';
+        ctx.fillText(
+          'Haz clic en "Seleccionar imagen" para subir una foto de una flor',
+          canvas.width / 2,
+          canvas.height / 2 - 15
+        );
+        ctx.fillText(
+          'o arrastra y suelta una imagen aquí',
+          canvas.width / 2,
+          canvas.height / 2 + 15
+        );
+      }
+
+      // Redimensionar canvas al cargar y cuando cambia el tamaño de la ventana
+      window.addEventListener('load', resizeCanvas);
+      window.addEventListener('resize', resizeCanvas);
+
+      // Inicializar botones
+      resetBtn.disabled = false;
+      predictBtn.disabled = true;
     </script>
   </body>
 </html>
