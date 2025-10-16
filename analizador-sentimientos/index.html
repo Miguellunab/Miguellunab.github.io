@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizador de Sentimientos - Demo Interactiva</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .analyzer-box {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+        
+        label {
+            display: block;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .button-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-analyze {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-analyze:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-clear {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn-clear:hover {
+            background: #d0d0d0;
+        }
+        
+        .result-box {
+            margin-top: 30px;
+            padding: 30px;
+            border-radius: 12px;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .result-positive {
+            background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+            color: white;
+        }
+        
+        .result-negative {
+            background: linear-gradient(135deg, #FF6B6B 0%, #C44569 100%);
+            color: white;
+        }
+        
+        .result-emoji {
+            font-size: 4em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .result-text {
+            font-size: 1.8em;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .result-confidence {
+            font-size: 1.2em;
+            text-align: center;
+            opacity: 0.9;
+        }
+        
+        .result-details {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid rgba(255,255,255,0.3);
+            font-size: 0.95em;
+        }
+        
+        .examples {
+            margin-top: 40px;
+        }
+        
+        .examples h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .example-item {
+            background: #f8f9fa;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid #667eea;
+        }
+        
+        .example-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .info-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 6px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            font-size: 1.2em;
+            color: #667eea;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎭 Analizador de Sentimientos</h1>
+        <p class="subtitle">Análisis de emociones en texto con Machine Learning</p>
+        
+        <div class="info-box">
+            <strong>ℹ️ Cómo funciona:</strong> Este modelo usa un algoritmo simulado basado en palabras clave.
+            Para la versión completa con el modelo real de ML, usa la aplicación Streamlit o despliega en un servidor.
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">1.6M</div>
+                <div class="stat-label">Tweets Entrenados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">15K</div>
+                <div class="stat-label">Vocabulario</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">~80%</div>
+                <div class="stat-label">Precisión</div>
+            </div>
+        </div>
+        
+        <div class="analyzer-box">
+            <label for="textInput">Escribe tu texto para analizar:</label>
+            <textarea 
+                id="textInput" 
+                placeholder="Ejemplo: I love this product! It's amazing and wonderful! ✨
+
+Prueba con textos en inglés como:
+- This is terrible! Worst experience ever!
+- Great service, highly recommend!
+- Feeling happy and excited today!"
+            ></textarea>
+            
+            <div class="button-container">
+                <button class="btn-analyze" onclick="analyzeText()">🔍 Analizar Sentimiento</button>
+                <button class="btn-clear" onclick="clearText()">🗑️ Limpiar</button>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Analizando texto...</p>
+        </div>
+        
+        <div class="result-box" id="resultBox">
+            <div class="result-emoji" id="resultEmoji"></div>
+            <div class="result-text" id="resultText"></div>
+            <div class="result-confidence" id="resultConfidence"></div>
+            <div class="result-details" id="resultDetails"></div>
+        </div>
+        
+        <div class="examples">
+            <h3>📝 Prueba con estos ejemplos:</h3>
+            <div class="example-item" onclick="setExample('I love this product! It\\'s amazing and wonderful!')">
+                ✅ "I love this product! It's amazing and wonderful!"
+            </div>
+            <div class="example-item" onclick="setExample('This is terrible! Worst experience ever!')">
+                ❌ "This is terrible! Worst experience ever!"
+            </div>
+            <div class="example-item" onclick="setExample('The weather is nice today')">
+                😊 "The weather is nice today"
+            </div>
+            <div class="example-item" onclick="setExample('I hate waiting in long lines')">
+                😞 "I hate waiting in long lines"
+            </div>
+            <div class="example-item" onclick="setExample('Great service, highly recommend!')">
+                ⭐ "Great service, highly recommend!"
+            </div>
+            <div class="example-item" onclick="setExample('Disappointing quality, not worth the money')">
+                👎 "Disappointing quality, not worth the money"
+            </div>
+        </div>
+        
+        <footer>
+            <p><strong>Proyecto de Portfolio</strong> - Análisis de Sentimientos con Machine Learning</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">
+                📊 Dataset: Sentiment140 (1.6M tweets) | 🤖 Algoritmo: Ensemble Learning
+            </p>
+            <p style="margin-top: 10px; font-size: 0.85em; color: #999;">
+                Nota: Esta es una versión demo con algoritmo simplificado. 
+                Para el modelo real de ML, ejecuta: <code>streamlit run demo_web.py</code>
+            </p>
+        </footer>
+    </div>
+    
+    <script>
+        // Palabras clave para análisis simplificado (simulando el modelo)
+        const positiveWords = ['love', 'great', 'amazing', 'wonderful', 'excellent', 'fantastic', 
+                              'good', 'best', 'happy', 'perfect', 'awesome', 'nice', 'recommend',
+                              'beautiful', 'brilliant', 'exciting', 'glad', 'pleased', 'enjoy',
+                              'thank', 'thanks', 'appreciate', 'helpful', 'outstanding', 'superb'];
+        
+        const negativeWords = ['hate', 'terrible', 'worst', 'bad', 'awful', 'horrible', 'poor',
+                              'disappointing', 'disappointed', 'sad', 'angry', 'frustrating',
+                              'annoying', 'useless', 'waste', 'never', 'not', 'don\'t', 'didn\'t',
+                              'won\'t', 'can\'t', 'pathetic', 'disgusting', 'boring', 'sucks'];
+        
+        function analyzeText() {
+            const text = document.getElementById('textInput').value.trim();
+            
+            if (text === '') {
+                alert('⚠️ Por favor escribe algo para analizar');
+                return;
+            }
+            
+            // Mostrar loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('resultBox').style.display = 'none';
+            
+            // Simular procesamiento (para dar sensación de análisis real)
+            setTimeout(() => {
+                const result = performAnalysis(text);
+                displayResult(result);
+            }, 1000);
+        }
+        
+        function performAnalysis(text) {
+            const lowerText = text.toLowerCase();
+            const words = lowerText.match(/\b\w+\b/g) || [];
+            
+            let positiveScore = 0;
+            let negativeScore = 0;
+            let matchedPositive = [];
+            let matchedNegative = [];
+            
+            // Contar palabras positivas y negativas
+            words.forEach(word => {
+                if (positiveWords.includes(word)) {
+                    positiveScore++;
+                    if (!matchedPositive.includes(word)) matchedPositive.push(word);
+                }
+                if (negativeWords.includes(word)) {
+                    negativeScore++;
+                    if (!matchedNegative.includes(word)) matchedNegative.push(word);
+                }
+            });
+            
+            // Calcular sentimiento
+            const totalScore = positiveScore + negativeScore;
+            let sentiment, confidence, emoji;
+            
+            if (totalScore === 0) {
+                // Neutral por defecto
+                sentiment = 'Neutral';
+                confidence = 50;
+                emoji = '😐';
+            } else {
+                const positiveRatio = positiveScore / totalScore;
+                
+                if (positiveRatio > 0.5) {
+                    sentiment = 'Positivo';
+                    confidence = Math.min(95, 50 + (positiveRatio * 50));
+                    emoji = '😊';
+                } else if (positiveRatio < 0.5) {
+                    sentiment = 'Negativo';
+                    confidence = Math.min(95, 50 + ((1 - positiveRatio) * 50));
+                    emoji = '😞';
+                } else {
+                    sentiment = 'Neutral';
+                    confidence = 50;
+                    emoji = '😐';
+                }
+            }
+            
+            return {
+                sentiment,
+                confidence: confidence.toFixed(1),
+                emoji,
+                wordCount: words.length,
+                positiveWords: matchedPositive,
+                negativeWords: matchedNegative,
+                positiveScore,
+                negativeScore
+            };
+        }
+        
+        function displayResult(result) {
+            document.getElementById('loading').style.display = 'none';
+            
+            const resultBox = document.getElementById('resultBox');
+            resultBox.style.display = 'block';
+            
+            // Aplicar clase según sentimiento
+            resultBox.className = 'result-box';
+            if (result.sentiment === 'Positivo') {
+                resultBox.classList.add('result-positive');
+            } else if (result.sentiment === 'Negativo') {
+                resultBox.classList.add('result-negative');
+            }
+            
+            document.getElementById('resultEmoji').textContent = result.emoji;
+            document.getElementById('resultText').textContent = `Sentimiento: ${result.sentiment}`;
+            document.getElementById('resultConfidence').textContent = 
+                `Confianza: ${result.confidence}%`;
+            
+            // Detalles
+            let details = `
+                <strong>📊 Análisis detallado:</strong><br>
+                • Palabras totales: ${result.wordCount}<br>
+                • Score positivo: ${result.positiveScore}<br>
+                • Score negativo: ${result.negativeScore}<br>
+            `;
+            
+            if (result.positiveWords.length > 0) {
+                details += `<br>✅ Palabras positivas detectadas: ${result.positiveWords.join(', ')}<br>`;
+            }
+            
+            if (result.negativeWords.length > 0) {
+                details += `<br>❌ Palabras negativas detectadas: ${result.negativeWords.join(', ')}<br>`;
+            }
+            
+            document.getElementById('resultDetails').innerHTML = details;
+            
+            // Scroll suave al resultado
+            resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        function clearText() {
+            document.getElementById('textInput').value = '';
+            document.getElementById('resultBox').style.display = 'none';
+            document.getElementById('textInput').focus();
+        }
+        
+        function setExample(text) {
+            document.getElementById('textInput').value = text;
+            document.getElementById('textInput').focus();
+            // Auto-analizar después de un breve delay
+            setTimeout(() => analyzeText(), 300);
+        }
+    </script>
+</body>
+</html>
