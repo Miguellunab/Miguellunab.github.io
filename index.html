@@ -130,21 +130,16 @@
         flex-direction: column;
         width: 300px;
         max-width: 100%;
+        border-top: 5px solid #09f;
       }
 
       .project-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-      }
-
-      .project-image {
-        height: 150px;
-        background-size: cover;
-        background-position: center;
+        box-shadow: 0 8px 25px rgba(0, 153, 255, 0.2);
       }
 
       .project-card .content {
-        padding: 15px;
+        padding: 20px;
         flex-grow: 1;
         display: flex;
         flex-direction: column;
@@ -152,13 +147,19 @@
 
       .project-card h3 {
         margin-top: 0;
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         color: #09f;
+      }
+
+      .project-icon {
+        font-size: 2.5rem;
+        text-align: center;
+        padding: 10px 0;
       }
 
       .project-card p {
         margin-bottom: 15px;
-        line-height: 1.4;
+        line-height: 1.5;
         flex-grow: 1;
         font-size: 0.9rem;
       }
@@ -166,16 +167,17 @@
       .project-card .tags {
         display: flex;
         flex-wrap: wrap;
-        gap: 5px;
+        gap: 8px;
         margin-top: auto;
       }
 
       .tag {
-        padding: 3px 8px;
+        padding: 5px 10px;
         background: #e9ecef;
         border-radius: 4px;
-        font-size: 0.7rem;
+        font-size: 0.75rem;
         color: #495057;
+        font-weight: 500;
       }
 
       /* About section */
@@ -342,10 +344,6 @@
           max-width: 280px;
         }
 
-        .project-image {
-          height: 130px;
-        }
-
         .about-content,
         .contact-section {
           padding: 15px 10px;
@@ -381,21 +379,11 @@
         <div class="container">
           <h2>MIS PROYECTOS</h2>
           <div class="projects-list">
-            <a
-              href="./red-neuronal-simple/"
-              class="project-card">
-              <div
-                class="project-image"
-                style="
-                  background-image: url('https://raw.githubusercontent.com/tensorflow/tfjs/master/tfjs-converter/demo/mobilenet/imgs/fjord.jpg');
-                "></div>
+            <a href="./red-neuronal-simple/" class="project-card">
+              <div class="project-icon">🧠</div>
               <div class="content">
-                <h3>RED NEURONAL SIMPLE</h3>
-                <p>
-                  Conversión de Celsius a Fahrenheit usando TensorFlow.js. Un
-                  proyecto introductorio para entender los conceptos básicos de
-                  las redes neuronales.
-                </p>
+                <h3>Red Neuronal Simple</h3>
+                <p>Conversión de Celsius a Fahrenheit con TensorFlow.js para entender los conceptos básicos de las redes neuronales.</p>
                 <div class="tags">
                   <span class="tag">TensorFlow.js</span>
                   <span class="tag">JavaScript</span>
@@ -403,21 +391,11 @@
                 </div>
               </div>
             </a>
-            <a
-              href="./clasificador-flores/"
-              class="project-card">
-              <div
-                class="project-image"
-                style="
-                  background-image: url('https://raw.githubusercontent.com/tensorflow/tfjs-models/master/mobilenet/demo.jpg');
-                "></div>
+            <a href="./clasificador-flores/" class="project-card">
+              <div class="project-icon">🌸</div>
               <div class="content">
-                <h3>CLASIFICADOR DE FLORES</h3>
-                <p>
-                  Implementación de un clasificador de especies de flores
-                  utilizando diferentes modelos de deep learning. Explora cómo
-                  funcionan los modelos de clasificación de imágenes.
-                </p>
+                <h3>Clasificador de Flores</h3>
+                <p>Clasificador de especies de flores con MobileNetV2 y TensorFlow.js para explorar la clasificación de imágenes.</p>
                 <div class="tags">
                   <span class="tag">TensorFlow.js</span>
                   <span class="tag">MobileNetV2</span>
@@ -425,26 +403,15 @@
                 </div>
               </div>
             </a>
-            <a
-              href="./analizador-sentimientos/"
-              class="project-card">
-              <div
-                class="project-image"
-                style="
-                  background-image: url('https://images.unsplash.com/photo-1516192518150-0d8fee5425e3?w=500&h=300&fit=crop');
-                "></div>
+            <a href="./analizador-sentimientos/" class="project-card">
+              <div class="project-icon">🎭</div>
               <div class="content">
-                <h3>ANALIZADOR DE SENTIMIENTOS</h3>
-                <p>
-                  Sistema de análisis de sentimientos NLP entrenado con 1.6M
-                  tweets. Clasifica textos como positivos o negativos usando
-                  Machine Learning (TF-IDF + scikit-learn).
-                </p>
+                <h3>Analizador de Sentimientos</h3>
+                <p>Sistema de análisis de sentimientos NLP que clasifica textos como positivos o negativos usando Machine Learning.</p>
                 <div class="tags">
                   <span class="tag">NLP</span>
                   <span class="tag">Machine Learning</span>
                   <span class="tag">Python</span>
-                  <span class="tag">scikit-learn</span>
                 </div>
               </div>
             </a>

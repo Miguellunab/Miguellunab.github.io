@@ -1,297 +1,212 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Red Neuronal Simple - Portfolio de Miguel</title>
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="../favicon-32x32.png" />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="../favicon-16x16.png" />
-    <link
-      rel="icon"
-      type="image/jpg"
-      href="../pixelart_miguel.png" />
-    <!-- Favicon -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap"
-      rel="stylesheet" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="icon" type="image/jpg" href="../pixelart_miguel.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-      /* Estilos personalizados */
-      body {
-        margin: 0;
-        font-family: 'Roboto Mono', monospace;
-        background: #f4f4f9;
-        color: #333;
-        overflow-x: hidden;
-      }
+        body {
+            margin: 0;
+            font-family: 'Roboto Mono', monospace;
+            background: #f4f4f9;
+            color: #333;
+            overflow-x: hidden;
+        }
 
-      h1,
-      h2,
-      h3 {
-        font-weight: bold;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        color: #2c3e50;
-      }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-      .container {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
-      }
+        header {
+            padding: 20px 10px;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            flex-wrap: wrap;
+        }
 
-      header {
-        padding: 30px 20px;
-        background: #ffffff;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        text-align: center;
-      }
+        header .back-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
 
-      header img {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        border: 2px solid #a8dadc;
-      }
+        header .back-link img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid #09f;
+        }
 
-      .back-link {
-        display: inline-block;
-        margin-bottom: 20px;
-        color: #09f;
-        text-decoration: none;
-        transition: color 0.3s ease;
-      }
+        header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: #09f;
+            width: 100%;
+            order: 2;
+        }
 
-      .back-link:hover {
-        color: #457b9d;
-        text-decoration: underline;
-      }
+        .project-details {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
 
-      .form-range {
-        width: 100%;
-        accent-color: #09f;
-      }
+        .project-details h2 {
+            color: #09f;
+            border-bottom: 2px solid #09f;
+            padding-bottom: 10px;
+        }
 
-      #resultado {
-        margin-top: 20px;
-        font-size: 1.5rem;
-        color: #1d3557;
-        background: #ffffff;
-        padding: 15px;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      }
+        .project-details ul {
+            list-style: none;
+            padding: 0;
+        }
 
-      .btn-reset {
-        margin-top: 20px;
-        padding: 10px 20px;
-        background: #09f;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 1rem;
-        transition: background 0.3s ease;
-      }
+        .project-details ul li {
+            background: #f0f8ff;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
 
-      .btn-reset:hover {
-        background: #457b9d;
-      }
+        .card {
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
 
-      footer {
-        padding: 20px;
-        background: #f4f4f9;
-        text-align: center;
-        margin-top: 50px;
-        border-top: 1px solid #ddd;
-      }
+        .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 30px;
+        }
 
-      footer p {
-        font-size: 0.9rem;
-        color: #666;
-      }
+        #resultado {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            color: #1d3557;
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
 
-      .card {
-        background: #ffffff;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        padding: 20px;
-        margin: 20px 0;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      }
+        footer {
+            padding: 20px;
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+        }
 
-      .controls {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 30px;
-      }
+        footer p {
+            margin: 0;
+            font-size: 0.8rem;
+        }
 
-      .slider-container {
-        width: 100%;
-        margin-bottom: 20px;
-      }
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+            }
 
-      .explanation {
-        background: #f8f9fa;
-        padding: 20px;
-        border-radius: 5px;
-        margin-top: 40px;
-      }
+            header .back-link {
+                position: static;
+                margin-bottom: 15px;
+            }
 
-      .explanation h3 {
-        color: #09f;
-        margin-top: 0;
-      }
-
-      .explanation code {
-        background: #e9ecef;
-        padding: 2px 5px;
-        border-radius: 3px;
-        font-family: monospace;
-      }
-
-      .formula {
-        text-align: center;
-        font-weight: bold;
-        margin: 20px 0;
-        font-size: 1.2rem;
-      }
+            header h1 {
+                font-size: 1.5rem;
+                order: 0;
+            }
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <header>
-      <div class="container">
-        <a
-          href="../"
-          class="back-link"
-          >← Volver al Portfolio</a
-        >
-        <img
-          src="../pixelart_miguel.png"
-          alt="Logo Miguel"
-          class="logo" />
-        <h1>Red Neuronal Simple</h1>
-        <p>Conversión de Celsius a Fahrenheit usando TensorFlow.js</p>
-      </div>
+        <a href="../" class="back-link">
+            <img src="../pixelart_miguel.png" alt="Logo Miguel">
+            <span>Volver al Portfolio</span>
+        </a>
+        <h1>🧠 Red Neuronal Simple</h1>
     </header>
 
-    <main>
-      <div class="container">
+    <div class="container">
+        <div class="project-details">
+            <h2>Detalles del Proyecto</h2>
+            <p>Esta aplicación utiliza una red neuronal entrenada para convertir grados Celsius a Fahrenheit. Mueve el deslizador para probar diferentes valores.</p>
+            <ul>
+                <li><strong>Tecnología:</strong> TensorFlow.js, Keras (para entrenamiento)</li>
+                <li><strong>Objetivo:</strong> Demostrar la capacidad de una red neuronal para aprender relaciones matemáticas simples.</li>
+            </ul>
+        </div>
+
         <div class="card">
-          <h2>Conversor de Temperatura</h2>
-          <p>
-            Esta aplicación utiliza una red neuronal entrenada para convertir
-            grados Celsius a Fahrenheit. Mueve el deslizador para probar
-            diferentes valores:
-          </p>
-
-          <div class="controls">
-            <div class="slider-container">
-              <label for="celsius"
-                >Celsius: <span id="lbl-celsius">0</span>°C</label
-              >
-              <input
-                type="range"
-                class="form-range"
-                id="celsius"
-                min="-50"
-                max="50"
-                value="0"
-                oninput="cambiarCelsius()" />
+            <h2>Conversor de Temperatura</h2>
+            <div class="controls">
+                <div class="slider-container">
+                    <label for="celsius">Celsius: <span id="lbl-celsius">0</span>°C</label>
+                    <input type="range" class="form-range" id="celsius" min="-50" max="50" value="0" oninput="cambiarCelsius()">
+                </div>
+                <div id="resultado">0 grados Celsius son 32 grados Fahrenheit</div>
+                <button class="btn-reset" onclick="resetCelsius()">Reiniciar</button>
             </div>
-
-            <div id="resultado">0 grados Celsius son 32 grados Fahrenheit</div>
-            <button
-              class="btn-reset"
-              onclick="resetCelsius()">
-              Reiniciar
-            </button>
-          </div>
         </div>
-
-        <div class="explanation">
-          <h3>¿Cómo funciona?</h3>
-          <p>
-            Esta red neuronal ha sido entrenada para aprender la relación entre
-            grados Celsius y Fahrenheit. La fórmula matemática real es:
-          </p>
-          <div class="formula">F = C × 1.8 + 32</div>
-          <p>
-            Sin embargo, la red neuronal aprende esta relación por sí misma a
-            partir de ejemplos, sin ser programada explícitamente con la
-            fórmula. Durante el entrenamiento, la red ajusta sus pesos internos
-            para minimizar el error de predicción.
-          </p>
-
-          <h3>Tecnologías utilizadas</h3>
-          <ul>
-            <li>TensorFlow.js para inferencia en el navegador</li>
-            <li>Python con TensorFlow/Keras para el entrenamiento inicial</li>
-            <li>HTML/CSS/JavaScript para la interfaz web</li>
-          </ul>
-
-          <h3>Estructura de la red</h3>
-          <p>Este modelo utiliza una red neuronal sencilla con:</p>
-          <ul>
-            <li>Una capa de entrada (1 neurona para el valor en Celsius)</li>
-            <li>Una capa oculta densa (4 neuronas con activación ReLU)</li>
-            <li>Una capa de salida (1 neurona para el valor en Fahrenheit)</li>
-          </ul>
-        </div>
-      </div>
-    </main>
+    </div>
 
     <footer>
-      <div class="container">
-        <p>&copy; 2025 Miguel Lopez. Todos los derechos reservados.</p>
-      </div>
+        <div class="container">
+            <p>&copy; 2025 Miguel Lopez. Todos los derechos reservados.</p>
+        </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script>
-      var modelo = null;
+        let modelo = null;
 
-      // Cargar modelo
-      (async () => {
-        console.log('Cargando modelo...');
-        modelo = await tf.loadLayersModel('model.json');
-        console.log('Modelo cargado...');
-      })();
+        (async () => {
+            console.log('Cargando modelo...');
+            modelo = await tf.loadLayersModel('model.json');
+            console.log('Modelo cargado.');
+        })();
 
-      function cambiarCelsius() {
-        var celsius = document.getElementById('celsius').value;
-        document.getElementById('lbl-celsius').innerHTML = celsius;
-        if (modelo != null) {
-          var tensor = tf.tensor1d([parseInt(celsius)]);
-          var prediccion = modelo.predict(tensor).dataSync();
-          prediccion = Math.round(prediccion[0]);
-          document.getElementById('resultado').innerHTML =
-            celsius +
-            ' grados Celsius son ' +
-            prediccion +
-            ' grados Fahrenheit';
-        } else {
-          document.getElementById('resultado').innerHTML =
-            'Intenta de nuevo en un momento...';
+        function cambiarCelsius() {
+            const celsius = document.getElementById('celsius').value;
+            document.getElementById('lbl-celsius').innerHTML = celsius;
+            if (modelo) {
+                const tensor = tf.tensor1d([parseInt(celsius)]);
+                const prediccion = modelo.predict(tensor).dataSync();
+                const fahrenheit = Math.round(prediccion[0]);
+                document.getElementById('resultado').innerHTML = `${celsius} grados Celsius son ${fahrenheit} grados Fahrenheit`;
+            } else {
+                document.getElementById('resultado').innerHTML = 'Intenta de nuevo en un momento...';
+            }
         }
-      }
 
-      function resetCelsius() {
-        document.getElementById('celsius').value = 0;
-        document.getElementById('lbl-celsius').innerHTML = 0;
-        document.getElementById('resultado').innerHTML =
-          '0 grados Celsius son 32 grados Fahrenheit';
-      }
+        function resetCelsius() {
+            document.getElementById('celsius').value = 0;
+            document.getElementById('lbl-celsius').innerHTML = 0;
+            document.getElementById('resultado').innerHTML = '0 grados Celsius son 32 grados Fahrenheit';
+        }
     </script>
-  </body>
+</body>
 </html>

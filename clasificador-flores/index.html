@@ -1,715 +1,294 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clasificador de Flores - Portfolio de Miguel</title>
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="../favicon-32x32.png" />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="../favicon-16x16.png" />
-    <link
-      rel="icon"
-      type="image/jpg"
-      href="../pixelart_miguel.png" />
-    <!-- Favicon -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap"
-      rel="stylesheet" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="icon" type="image/jpg" href="../pixelart_miguel.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-      /* Estilos personalizados */
-      body {
-        margin: 0;
-        font-family: 'Roboto Mono', monospace;
-        background: #f4f4f9;
-        color: #333;
-        overflow-x: hidden;
-      }
-
-      h1,
-      h2,
-      h3 {
-        font-weight: bold;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        color: #2c3e50;
-      }
-
-      .container {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
-      }
-
-      header {
-        padding: 30px 20px;
-        background: #ffffff;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        text-align: center;
-      }
-
-      header img {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        border: 2px solid #a8dadc;
-      }
-
-      .back-link {
-        display: inline-block;
-        margin-bottom: 20px;
-        color: #09f;
-        text-decoration: none;
-        transition: color 0.3s ease;
-      }
-
-      .back-link:hover {
-        color: #457b9d;
-        text-decoration: underline;
-      }
-
-      footer {
-        padding: 20px;
-        background: #f4f4f9;
-        text-align: center;
-        margin-top: 50px;
-        border-top: 1px solid #ddd;
-      }
-
-      footer p {
-        font-size: 0.9rem;
-        color: #666;
-      }
-
-      .card {
-        background: #ffffff;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        padding: 20px;
-        margin: 20px 0;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      }
-
-      .classifier-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-
-      /* Mejora para el área de arrastrar y soltar */
-      #canvas-wrapper {
-        position: relative;
-        width: 100%;
-        max-width: 500px;
-        margin: 20px auto;
-        border: 2px dashed #09f;
-        border-radius: 8px;
-        overflow: hidden;
-        transition: all 0.3s ease;
-      }
-
-      #canvas-wrapper.dragover {
-        background-color: rgba(0, 153, 255, 0.1);
-        border: 2px dashed #007acc;
-        transform: scale(1.02);
-      }
-
-      #canvas {
-        width: 100%;
-        height: 300px;
-        background-color: #f8f9fa;
-        display: block;
-      }
-
-      #imagePreview {
-        max-width: 100%;
-        max-height: 300px;
-        display: none;
-        margin: 0 auto;
-      }
-
-      .upload-btn {
-        background: #09f;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-family: inherit;
-        margin-top: 10px;
-        transition: background 0.3s ease;
-      }
-
-      .upload-btn:hover {
-        background: #007acc;
-      }
-
-      #results {
-        width: 100%;
-        max-width: 500px;
-        background: white;
-        border-radius: 8px;
-        padding: 20px;
-        margin-top: 20px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      }
-
-      .result-item {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 10px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #eee;
-      }
-
-      .result-item:last-child {
-        border-bottom: none;
-      }
-
-      .progress-bar {
-        height: 10px;
-        background: #e9ecef;
-        border-radius: 5px;
-        overflow: hidden;
-        margin-top: 5px;
-      }
-
-      .progress {
-        height: 100%;
-        background: #09f;
-        border-radius: 5px;
-      }
-
-      .hidden {
-        display: none;
-      }
-
-      .explanation {
-        background: #f8f9fa;
-        padding: 20px;
-        border-radius: 5px;
-        margin-top: 40px;
-      }
-
-      .explanation h3 {
-        color: #09f;
-        margin-top: 0;
-      }
-
-      #loading {
-        display: none;
-        text-align: center;
-        margin: 20px 0;
-      }
-
-      .lds-ring {
-        display: inline-block;
-        position: relative;
-        width: 80px;
-        height: 80px;
-      }
-
-      .lds-ring div {
-        box-sizing: border-box;
-        display: block;
-        position: absolute;
-        width: 64px;
-        height: 64px;
-        margin: 8px;
-        border: 8px solid #09f;
-        border-radius: 50%;
-        animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-        border-color: #09f transparent transparent transparent;
-      }
-
-      .lds-ring div:nth-child(1) {
-        animation-delay: -0.45s;
-      }
-
-      .lds-ring div:nth-child(2) {
-        animation-delay: -0.3s;
-      }
-
-      .lds-ring div:nth-child(3) {
-        animation-delay: -0.15s;
-      }
-
-      @keyframes lds-ring {
-        0% {
-          transform: rotate(0deg);
+        body {
+            margin: 0;
+            font-family: 'Roboto Mono', monospace;
+            background: #f4f4f9;
+            color: #333;
+            overflow-x: hidden;
         }
-        100% {
-          transform: rotate(360deg);
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
         }
-      }
 
-      .model-status {
-        margin: 10px 0;
-        padding: 10px;
-        border-radius: 5px;
-        text-align: center;
-        font-weight: bold;
-      }
+        header {
+            padding: 20px 10px;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            flex-wrap: wrap;
+        }
 
-      .status-loading {
-        background-color: #fff3cd;
-        color: #856404;
-        border: 1px solid #ffeeba;
-      }
+        header .back-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
 
-      .status-ready {
-        background-color: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-      }
+        header .back-link img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid #09f;
+        }
 
-      .status-error {
-        background-color: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-      }
+        header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: #09f;
+            width: 100%;
+            order: 2;
+        }
 
-      .btn-container {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin-top: 15px;
-      }
+        .project-details {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
 
-      .btn {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        font-family: inherit;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-      }
+        .project-details h2 {
+            color: #09f;
+            border-bottom: 2px solid #09f;
+            padding-bottom: 10px;
+        }
 
-      .btn-primary {
-        background-color: #09f;
-        color: white;
-      }
+        .project-details ul {
+            list-style: none;
+            padding: 0;
+        }
 
-      .btn-secondary {
-        background-color: #6c757d;
-        color: white;
-      }
+        .project-details ul li {
+            background: #f0f8ff;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
 
-      .btn:hover {
-        opacity: 0.9;
-        transform: translateY(-2px);
-      }
+        .classifier-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-      .btn:disabled {
-        background-color: #cccccc;
-        color: #666666;
-        cursor: not-allowed;
-      }
+        #canvas-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 20px auto;
+            border: 2px dashed #09f;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        #canvas-wrapper.dragover {
+            background-color: rgba(0, 153, 255, 0.1);
+            border: 2px dashed #007acc;
+            transform: scale(1.02);
+        }
+
+        #canvas {
+            width: 100%;
+            height: 300px;
+            background-color: #f8f9fa;
+            display: block;
+        }
+
+        #imagePreview {
+            max-width: 100%;
+            max-height: 300px;
+            display: none;
+            margin: 0 auto;
+        }
+
+        .upload-btn {
+            background: #09f;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: inherit;
+            margin-top: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            background: #007acc;
+        }
+
+        #results {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        footer {
+            padding: 20px;
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+            }
+
+            header .back-link {
+                position: static;
+                margin-bottom: 15px;
+            }
+
+            header h1 {
+                font-size: 1.5rem;
+                order: 0;
+            }
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <header>
-      <div class="container">
-        <a
-          href="../"
-          class="back-link"
-          >← Volver al Portfolio</a
-        >
-        <img
-          src="../pixelart_miguel.png"
-          alt="Logo Miguel"
-          class="logo" />
-        <h1>Clasificador de Flores</h1>
-        <p>Identificación de especies de flores con MobileNetV2</p>
-      </div>
+        <a href="../" class="back-link">
+            <img src="../pixelart_miguel.png" alt="Logo Miguel">
+            <span>Volver al Portfolio</span>
+        </a>
+        <h1>🌸 Clasificador de Flores</h1>
     </header>
 
-    <main>
-      <div class="container">
-        <div class="card">
-          <h2>Sube una imagen de una flor</h2>
-          <p>
-            Esta aplicación utiliza un modelo de deep learning MobileNetV2 para
-            identificar diferentes especies de flores. Sube una imagen y el
-            modelo generará predicciones sobre qué tipo de flor es.
-          </p>
-
-          <div
-            id="modelStatus"
-            class="model-status status-loading">
-            Cargando modelo... Por favor espera.
-          </div>
-
-          <div class="classifier-container">
-            <div
-              id="canvas-wrapper"
-              ondragover="handleDragOver(event)"
-              ondragleave="handleDragLeave(event)"
-              ondrop="handleDrop(event)">
-              <canvas id="canvas"></canvas>
-              <img
-                id="imagePreview"
-                alt="Vista previa de la imagen" />
-              <div class="drag-instruction">
-                También puedes arrastrar y soltar una imagen aquí
-              </div>
-            </div>
-
-            <input
-              type="file"
-              id="imageUpload"
-              accept="image/*"
-              class="hidden" />
-            <div class="btn-container">
-              <button
-                class="btn btn-primary"
-                onclick="document.getElementById('imageUpload').click()">
-                Seleccionar imagen
-              </button>
-              <button
-                id="predictBtn"
-                class="btn btn-primary"
-                onclick="runPrediction()"
-                disabled>
-                Predecir
-              </button>
-              <button
-                id="resetBtn"
-                class="btn btn-secondary"
-                onclick="resetClassifier()">
-                Reiniciar
-              </button>
-            </div>
-
-            <div id="loading">
-              <div class="lds-ring">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-              </div>
-              <p>Analizando imagen...</p>
-            </div>
-
-            <div
-              id="results"
-              class="hidden">
-              <h3>Resultados</h3>
-              <div id="predictions"></div>
-            </div>
-          </div>
+    <div class="container">
+        <div class="project-details">
+            <h2>Detalles del Proyecto</h2>
+            <p>Esta aplicación utiliza un modelo de deep learning (MobileNetV2) para identificar diferentes especies de flores. Sube una imagen y el modelo generará predicciones sobre qué tipo de flor es.</p>
+            <ul>
+                <li><strong>Tecnología:</strong> TensorFlow.js, MobileNetV2</li>
+                <li><strong>Objetivo:</strong> Clasificación de imágenes en tiempo real en el navegador.</li>
+            </ul>
         </div>
 
-        <div class="explanation">
-          <h3>¿Cómo funciona?</h3>
-          <p>
-            Este clasificador utiliza un modelo pre-entrenado MobileNetV2, una
-            arquitectura eficiente de red neuronal convolucional diseñada para
-            aplicaciones móviles y embebidas. El modelo ha sido entrenado con
-            miles de imágenes de flores para reconocer patrones visuales que
-            diferencian varias especies.
-          </p>
-
-          <h3>Algunas flores que puede detectar:</h3>
-          <ul>
-            <li>Rosas</li>
-            <li>Girasoles</li>
-            <li>Tulipanes</li>
-            <li>Margaritas</li>
-            <li>Orquídeas</li>
-            <li>Y muchas más</li>
-          </ul>
-
-          <h3>Tecnologías utilizadas</h3>
-          <ul>
-            <li>TensorFlow.js para ejecutar el modelo en el navegador</li>
-            <li>
-              MobileNetV2 pre-entrenado y optimizado para clasificación de
-              imágenes
-            </li>
-            <li>HTML5 Canvas para manipulación de imágenes</li>
-          </ul>
+        <div class="classifier-container card">
+            <h2>Sube una imagen de una flor</h2>
+            <div id="canvas-wrapper">
+                <canvas id="canvas"></canvas>
+                <img id="imagePreview" alt="Vista previa de la imagen">
+            </div>
+            <input type="file" id="imageUpload" accept="image/*" class="hidden">
+            <button class="upload-btn" onclick="document.getElementById('imageUpload').click()">Seleccionar imagen</button>
+            <div id="results" class="hidden">
+                <h3>Resultados de la Predicción</h3>
+                <div id="predictions"></div>
+            </div>
         </div>
-      </div>
-    </main>
+    </div>
 
     <footer>
-      <div class="container">
-        <p>&copy; 2025 Miguel Lopez. Todos los derechos reservados.</p>
-      </div>
+        <div class="container">
+            <p>&copy; 2025 Miguel Lopez. Todos los derechos reservados.</p>
+        </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script>
-      // Referencias a elementos del DOM
-      const imageUpload = document.getElementById('imageUpload');
-      const imagePreview = document.getElementById('imagePreview');
-      const canvas = document.getElementById('canvas');
-      const canvasWrapper = document.getElementById('canvas-wrapper');
-      const resultsContainer = document.getElementById('results');
-      const predictionsContainer = document.getElementById('predictions');
-      const loadingIndicator = document.getElementById('loading');
-      const modelStatus = document.getElementById('modelStatus');
-      const predictBtn = document.getElementById('predictBtn');
-      const resetBtn = document.getElementById('resetBtn');
+        const imageUpload = document.getElementById('imageUpload');
+        const imagePreview = document.getElementById('imagePreview');
+        const canvas = document.getElementById('canvas');
+        const resultsContainer = document.getElementById('results');
+        const predictionsContainer = document.getElementById('predictions');
+        let model;
 
-      // Lista de clases de flores (ejemplo)
-      const flowerClasses = [
-        'rosa',
-        'tulipán',
-        'girasol',
-        'margarita',
-        'orquídea',
-        'lirio',
-        'dalia',
-        'narciso',
-        'clavel',
-        'crisantemo',
-      ];
-
-      // Modelo
-      let model;
-      let currentImage = null;
-
-      // Inicializar modelo
-      async function loadModel() {
-        modelStatus.textContent = 'Cargando modelo... Por favor espera.';
-        modelStatus.className = 'model-status status-loading';
-
-        try {
-          model = await tf.loadLayersModel('./mobilenetv2_tfjs/model.json');
-          console.log('Modelo cargado');
-          modelStatus.textContent =
-            '¡Modelo cargado! Listo para clasificar flores.';
-          modelStatus.className = 'model-status status-ready';
-        } catch (error) {
-          console.error('Error al cargar el modelo:', error);
-          modelStatus.textContent =
-            'Error al cargar el modelo. Intenta recargar la página.';
-          modelStatus.className = 'model-status status-error';
-        }
-      }
-
-      // Cargar modelo al iniciar
-      window.addEventListener('load', loadModel);
-
-      // Función para cargar una imagen (usado tanto para input file como para drag & drop)
-      function processImage(file) {
-        if (!file || !file.type.match('image.*')) {
-          alert('Por favor, selecciona una imagen válida.');
-          return;
+        async function loadModel() {
+            try {
+                model = await tf.loadLayersModel('./mobilenetv2_tfjs/model.json');
+                console.log('Modelo cargado exitosamente');
+            } catch (error) {
+                console.error('Error al cargar el modelo: ', error);
+            }
         }
 
-        const reader = new FileReader();
+        imageUpload.addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                    canvas.style.display = 'none';
+                    resultsContainer.classList.remove('hidden');
+                    await predict(imagePreview);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
 
-        reader.onload = function (event) {
-          // Limpiar cualquier resultado previo
-          resultsContainer.classList.add('hidden');
+        async function predict(imgElement) {
+            if (!model) {
+                console.log('El modelo no está cargado todavía.');
+                return;
+            }
 
-          // Mostrar imagen de vista previa
-          imagePreview.src = event.target.result;
-          imagePreview.style.display = 'block';
-          canvas.style.display = 'none';
+            const tensor = tf.browser.fromPixels(imgElement)
+                .resizeNearestNeighbor([224, 224])
+                .toFloat()
+                .expandDims();
 
-          // Crear imagen para procesamiento
-          currentImage = new Image();
-          currentImage.onload = function () {
-            predictBtn.disabled = model ? false : true;
-          };
-          currentImage.src = event.target.result;
+            const predictions = await model.predict(tensor).data();
+            const flowerClasses = ['Margarita', 'Diente de león', 'Rosa', 'Girasol', 'Tulipán'];
+            const results = Array.from(predictions)
+                .map((p, i) => ({ probability: p, className: flowerClasses[i] }))
+                .sort((a, b) => b.probability - a.probability)
+                .slice(0, 3);
 
-          resetBtn.disabled = false;
+            predictionsContainer.innerHTML = '';
+            results.forEach(result => {
+                const p = document.createElement('p');
+                p.innerText = `${result.className}: ${Math.round(result.probability * 100)}%`;
+                predictionsContainer.appendChild(p);
+            });
+        }
+
+        window.onload = () => {
+            loadModel();
+            const ctx = canvas.getContext('2d');
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#666';
+            ctx.font = '16px Roboto Mono';
+            ctx.fillText('Arrastra una imagen aquí', canvas.width / 2, canvas.height / 2);
         };
-
-        reader.readAsDataURL(file);
-      }
-
-      // Evento para cuando se sube una imagen mediante el input file
-      imageUpload.addEventListener('change', function (e) {
-        if (e.target.files.length === 0) return;
-        processImage(e.target.files[0]);
-      });
-
-      // Eventos para drag & drop
-      function handleDragOver(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        canvasWrapper.classList.add('dragover');
-      }
-
-      function handleDragLeave(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        canvasWrapper.classList.remove('dragover');
-      }
-
-      function handleDrop(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        canvasWrapper.classList.remove('dragover');
-
-        if (e.dataTransfer.files.length > 0) {
-          processImage(e.dataTransfer.files[0]);
-        }
-      }
-
-      // Clasificar la imagen
-      async function classifyImage(image) {
-        try {
-          // Mostrar cargando
-          loadingIndicator.style.display = 'block';
-          resultsContainer.classList.add('hidden');
-
-          // Preprocesar imagen para el modelo
-          const tensor = preprocessImage(image);
-
-          // Hacer predicción
-          const predictions = await model.predict(tensor).data();
-
-          // Liberar memoria
-          tensor.dispose();
-
-          // Ordenar predicciones
-          const topPredictions = Array.from(predictions)
-            .map((prob, i) => ({
-              className: flowerClasses[i] || `Clase ${i}`,
-              probability: prob,
-            }))
-            .sort((a, b) => b.probability - a.probability)
-            .slice(0, 5); // Top 5 resultados
-
-          // Mostrar resultados
-          displayResults(topPredictions);
-        } catch (error) {
-          console.error('Error al clasificar la imagen:', error);
-          alert('Error al procesar la imagen. Intenta con otra.');
-        } finally {
-          loadingIndicator.style.display = 'none';
-        }
-      }
-
-      // Función para ejecutar la predicción al hacer clic en el botón
-      function runPrediction() {
-        if (!currentImage || !model) {
-          alert(
-            'Por favor, sube una imagen primero o espera a que el modelo termine de cargar.'
-          );
-          return;
-        }
-
-        classifyImage(currentImage);
-      }
-
-      // Reiniciar el clasificador
-      function resetClassifier() {
-        // Restablecer la vista
-        imagePreview.style.display = 'none';
-        canvas.style.display = 'block';
-        resultsContainer.classList.add('hidden');
-
-        // Limpiar la imagen actual y desactivar botones
-        currentImage = null;
-        predictBtn.disabled = true;
-
-        // Importante: resetear también el input file para poder cargar el mismo archivo otra vez
-        imageUpload.value = '';
-
-        // Redimensionar y limpiar el canvas
-        resizeCanvas();
-      }
-
-      // Preprocesar imagen para el modelo
-      function preprocessImage(image) {
-        // Crear un tensor a partir de la imagen
-        return tf.tidy(() => {
-          // Convertir la imagen a un tensor 3D [altura, ancho, canales]
-          let imageTensor = tf.browser
-            .fromPixels(image)
-            .resizeNearestNeighbor([224, 224]) // Redimensionar a 224x224 (tamaño esperado por MobileNet)
-            .toFloat();
-
-          // Normalizar los valores a [-1, 1]
-          const offset = tf.scalar(127.5);
-          imageTensor = imageTensor.sub(offset).div(offset);
-
-          // Expandir dimensiones para obtener un lote [1, altura, ancho, canales]
-          return imageTensor.expandDims(0);
-        });
-      }
-
-      // Mostrar resultados en la UI
-      function displayResults(predictions) {
-        predictionsContainer.innerHTML = '';
-
-        predictions.forEach((prediction) => {
-          const percent = (prediction.probability * 100).toFixed(1);
-
-          const resultItem = document.createElement('div');
-          resultItem.className = 'result-item';
-
-          resultItem.innerHTML = `
-            <div class="result-class">${prediction.className}</div>
-            <div class="result-prob">${percent}%</div>
-          `;
-
-          const progressBar = document.createElement('div');
-          progressBar.className = 'progress-bar';
-
-          const progressEl = document.createElement('div');
-          progressEl.className = 'progress';
-          progressEl.style.width = `${percent}%`;
-
-          progressBar.appendChild(progressEl);
-          resultItem.appendChild(progressBar);
-          predictionsContainer.appendChild(resultItem);
-        });
-
-        resultsContainer.classList.remove('hidden');
-      }
-
-      // Dibujar en el canvas inicialmente
-      const ctx = canvas.getContext('2d');
-
-      // Ajustar tamaño del canvas
-      function resizeCanvas() {
-        canvas.width = canvasWrapper.offsetWidth;
-        canvas.height = 300;
-
-        // Dibujar mensaje de imagen de muestra
-        ctx.fillStyle = '#f4f4f4';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        ctx.font = '16px Roboto Mono';
-        ctx.fillStyle = '#666';
-        ctx.textAlign = 'center';
-        ctx.fillText(
-          'Haz clic en "Seleccionar imagen" para subir una foto de una flor',
-          canvas.width / 2,
-          canvas.height / 2 - 15
-        );
-        ctx.fillText(
-          'o arrastra y suelta una imagen aquí',
-          canvas.width / 2,
-          canvas.height / 2 + 15
-        );
-      }
-
-      // Redimensionar canvas al cargar y cuando cambia el tamaño de la ventana
-      window.addEventListener('load', resizeCanvas);
-      window.addEventListener('resize', resizeCanvas);
-
-      // Inicializar botones
-      resetBtn.disabled = false;
-      predictBtn.disabled = true;
     </script>
-  </body>
+</body>
 </html>

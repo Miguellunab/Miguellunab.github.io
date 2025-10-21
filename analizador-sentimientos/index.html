@@ -32,30 +32,40 @@
       }
 
       header {
-        padding: 30px 20px;
-        background: #ffffff;
+        padding: 20px 10px;
+        background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        flex-wrap: wrap; /* Allow wrapping for smaller screens */
       }
 
-      .back-link {
-        display: inline-block;
-        margin-bottom: 20px;
-        color: #09f;
+      header .back-link {
+        display: flex;
+        align-items: center;
         text-decoration: none;
+        color: #333;
         font-weight: bold;
-        transition: color 0.3s ease;
+        margin-bottom: 10px; /* Add some space below the link */
       }
 
-      .back-link:hover {
-        color: #457b9d;
-        text-decoration: underline;
+      header .back-link img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+        border: 2px solid #09f;
       }
 
       header h1 {
-        margin-top: 10px;
-        font-size: 2rem;
+        margin: 0;
+        font-size: 1.8rem; /* Slightly reduce font size */
         color: #09f;
+        width: 100%; /* Ensure it takes full width */
+        order: 2; /* Change order to be below the back link */
       }
 
       .subtitle {
@@ -298,28 +308,31 @@
       }
 
       footer {
+        padding: 20px;
+        background: #2c3e50;
+        color: white;
         text-align: center;
-        margin-top: 40px;
-        padding: 30px 20px;
-        border-top: 2px solid #eee;
-        color: #666;
-        font-size: 0.85rem;
       }
 
-      footer a {
-        color: #09f;
-        text-decoration: none;
-        font-weight: bold;
-      }
-
-      footer a:hover {
-        text-decoration: underline;
+      footer p {
+        margin: 0;
+        font-size: 0.8rem;
       }
 
       /* Responsive Design */
       @media (max-width: 768px) {
+        header {
+          flex-direction: column;
+        }
+
+        header .back-link {
+          position: static;
+          margin-bottom: 15px;
+        }
+
         header h1 {
           font-size: 1.5rem;
+          order: 0; /* Reset order */
         }
 
         .button-container {
@@ -342,7 +355,10 @@
   </head>
   <body>
     <header>
-      <a href="../" class="back-link">← Volver al Portfolio</a>
+      <a href="../" class="back-link">
+        <img src="../pixelart_miguel.png" alt="Logo Miguel" />
+        <span>Volver al Portfolio</span>
+      </a>
       <h1>🎭 Analizador de Sentimientos</h1>
     </header>
 
@@ -423,8 +439,9 @@
       </div>
 
       <footer>
-        <p>💻 Desarrollado por <a href="https://github.com/Miguellunab" target="_blank">Miguel Luna</a></p>
-        <p style="margin-top: 10px;">Proyecto educativo de Machine Learning - Sentiment Analysis con 1.6M tweets del dataset Sentiment140</p>
+        <div class="container">
+          <p>&copy; 2025 Miguel Lopez. Todos los derechos reservados.</p>
+        </div>
       </footer>
     </div>
 
