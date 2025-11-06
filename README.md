@@ -23,6 +23,10 @@ Una implementación sencilla pero efectiva de una red neuronal para convertir te
 
 Un clasificador de especies de flores utilizando MobileNetV2, implementado en el navegador con TensorFlow.js.
 
+### [Gestión de Sueldos](./gestion-sueldos/)
+
+Landing del módulo de nómina con acceso al panel de autenticación desplegado externamente. Por políticas de seguridad del navegador (HTTPS/HTTP), el login se abre en una pestaña nueva hacia `http://3.15.223.201:5000/login`.
+
 ## 🛠️ Habilidades Técnicas
 
 - **Lenguajes de Programación**: C/C++ para microcontroladores, Python, JavaScript, HTML/CSS

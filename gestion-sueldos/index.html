@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestión de Sueldos | Miguel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #0a84ff;
+      --bg: #f5f7fb;
+      --dark: #1f2d3d;
+      --radius: 14px;
+      --gradient: linear-gradient(135deg,#0a84ff,#5ab2ff);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: 'Roboto Mono', monospace; background: var(--bg); color: var(--dark);
+      -webkit-font-smoothing: antialiased; line-height: 1.5;
+    }
+    header {
+      padding: 60px 20px 40px; text-align: center; position: relative; overflow: hidden;
+    }
+    header::before {
+      content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 20%, #d9eeff, transparent 60%);
+      z-index: -1;
+    }
+  h1 { margin: 0 0 10px; font-size: clamp(2rem,4vw,3rem); letter-spacing: 2px; text-transform: uppercase; background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .subtitle { max-width: 780px; margin: 0 auto; font-size: .95rem; color: #41566b; }
+
+    .badge-cloud { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 25px auto 0; }
+    .badge { background: #fff; padding: 6px 14px; border-radius: 40px; font-size: .65rem; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; box-shadow: 0 4px 10px rgba(0,0,0,.06); border: 1px solid #e6eef5; }
+
+    main { padding: 10px 20px 60px; }
+    .panel-grid { display: grid; gap: 30px; max-width: 1100px; margin: 0 auto; grid-template-columns: repeat(auto-fit,minmax(320px,1fr)); }
+
+    .panel { background: #ffffff; border-radius: var(--radius); padding: 28px 26px 30px; position: relative; display: flex; flex-direction: column; box-shadow: 0 10px 30px -8px rgba(15,72,128,.15); border: 1px solid #e3edf5; }
+    .panel h2 { margin: 0 0 12px; font-size: 1.15rem; color: var(--primary); letter-spacing: 1px; }
+    .panel p { font-size: .8rem; margin: 0 0 14px; color: #345; }
+    .panel ul { margin: 0 0 8px 16px; padding: 0; font-size: .75rem; }
+    .panel li { margin-bottom: 6px; }
+
+    .cta-wrap { margin-top: auto; }
+    .btn-primary { display:inline-flex; align-items:center; gap:8px; background: var(--gradient); color:#fff; padding:12px 20px; border-radius: 10px; font-size:.85rem; font-weight:700; text-decoration:none; box-shadow:0 8px 20px -6px rgba(10,132,255,.4); transition:.3s; }
+    .btn-primary:hover { transform: translateY(-4px); box-shadow:0 12px 30px -8px rgba(10,132,255,.5); }
+
+    .note-box { max-width: 900px; margin: 50px auto 0; background: #ffffff; padding: 22px 24px; border-radius: var(--radius); border:1px solid #e2ecf4; box-shadow: 0 6px 18px -6px rgba(0,0,0,.1); }
+    .note-box h3 { margin:0 0 10px; font-size: .9rem; color:#234; letter-spacing:1px; text-transform: uppercase; }
+    .note-box p { margin:0; font-size: .7rem; color:#456; }
+    .inline-code { font-family: monospace; background:#eef4fa; padding:2px 6px; border-radius:4px; font-size:.65rem; }
+
+    footer { padding:40px 20px; text-align:center; font-size:.65rem; color:#567; }
+    .back-home { display:inline-block; margin-top:14px; font-size:.7rem; text-decoration:none; color: var(--primary); font-weight:700; }
+
+    @media (max-width: 560px) {
+      .panel { padding:24px 20px 26px; }
+      .panel-grid { gap:20px; }
+      .badge { font-size:.55rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Gestión de Sueldos</h1>
+    <p class="subtitle">Módulo web para administrar usuarios, roles y cálculos salariales. Accede al panel seguro desplegado en la nube para realizar operaciones de manera eficiente y confiable.</p>
+    <div class="badge-cloud">
+      <span class="badge">Flask</span>
+      <span class="badge">PostgreSQL</span>
+      <span class="badge">Docker</span>
+      <span class="badge">AWS</span>
+      <span class="badge">Autenticación JWT</span>
+    </div>
+  </header>
+  <main>
+    <div class="panel-grid">
+      <div class="panel">
+        <h2>Características Principales</h2>
+        <p>El sistema está diseñado para escalar y mantener la integridad de los datos clave de nómina.</p>
+        <ul>
+          <li>Gestión de empleados y roles</li>
+          <li>Cálculo automático de horas y bonificaciones</li>
+          <li>Historial y auditoría de movimientos</li>
+          <li>Reportes descargables (PDF / CSV)</li>
+          <li>Panel responsivo y seguro</li>
+        </ul>
+        <div class="cta-wrap">
+          <a class="btn-primary" href="http://3.15.223.201:5000/login" target="_blank" rel="noopener">
+            <i class="fa-solid fa-right-to-bracket"></i> Ir al Login Seguro
+          </a>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Arquitectura</h2>
+        <p>Implementado siguiendo principios limpios y separación de capas para facilitar nuevas funciones.</p>
+        <ul>
+          <li>API REST modular</li>
+          <li>Persistencia optimizada con ORM</li>
+          <li>Contenedores para despliegue reproducible</li>
+          <li>Tokens JWT renovables</li>
+          <li>Logs estructurados y monitoreo</li>
+        </ul>
+        <div class="cta-wrap">
+          <a class="btn-primary" href="http://3.15.223.201:5000/login" target="_blank" rel="noopener">
+            <i class="fa-solid fa-shield-halved"></i> Acceder Ahora
+          </a>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Próximas Mejoras</h2>
+        <p>Roadmap para evolucionar el producto y mejorar la experiencia del usuario.</p>
+        <ul>
+          <li>Internacionalización (i18n)</li>
+          <li>Dashboard con métricas en tiempo real</li>
+          <li>Integración con nómina externa</li>
+          <li>Soporte de firma digital</li>
+          <li>Gestión avanzada de permisos</li>
+        </ul>
+        <div class="cta-wrap">
+          <a class="btn-primary" href="http://3.15.223.201:5000/login" target="_blank" rel="noopener">
+            <i class="fa-solid fa-rocket"></i> Explorar el Sistema
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="note-box">
+      <h3>Nota sobre la Integración</h3>
+      <p>El servicio corre en un servidor externo. Para seguridad y evitar problemas de <span class="inline-code">CORS</span> y credenciales, se accede en una pestaña nueva. Si en el futuro migras a HTTPS podrás incorporar un iframe seguro o un reverse proxy.</p>
+    </div>
+    <div style="text-align:center; margin-top:40px;">
+      <a class="back-home" href="../">← Volver al Portfolio</a>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2025 Miguel López. Proyecto Gestión de Sueldos.</p>
+  </footer>
+</body>
+</html>
