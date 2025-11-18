@@ -1,0 +1,12 @@
+/* Main Stylesheet */
+body { background-color: #050505; color: #ffffff; overflow-x: hidden; }
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #f97316; }
+.glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.3s ease; }
+.glass-card:hover { border-color: #f97316; transform: translateY(-5px); box-shadow: 0 0 20px rgba(249, 115, 22, 0.1); }
+.gradient-text { background: linear-gradient(to right, #f97316, #fb923c); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+.reveal.active { opacity: 1; transform: translateY(0); }
+.nav-blur { background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(10px); }

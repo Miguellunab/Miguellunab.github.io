@@ -1,6 +1,6 @@
 # Portfolio de Miguel López
 
-![Retrato de Miguel](pixelart_miguel.png)
+![Retrato de Miguel](assets/img/pixelart_miguel.png)
 
 ## 👋 Sobre Mí
 

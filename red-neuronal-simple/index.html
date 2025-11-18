@@ -6,149 +6,122 @@
     <title>Red Neuronal Simple - Portfolio de Miguel</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-    <link rel="icon" type="image/jpg" href="../pixelart_miguel.png">
+    <link rel="icon" type="image/jpg" href="../assets/img/pixelart_miguel.png">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
-        body {
-            margin: 0;
-            font-family: 'Roboto Mono', monospace;
-            background: #f4f4f9;
-            color: #333;
-            overflow-x: hidden;
-        }
+    :root {
+      --primary: #f97316;
+      --bg: #050505;
+      --card-bg: #111;
+      --text: #e0e0e0;
+      --text-muted: #a0a0a0;
+      --radius: 12px;
+      --gradient: linear-gradient(135deg, #f97316, #ea580c);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: 'Roboto Mono', monospace; background: var(--bg); color: var(--text);
+      -webkit-font-smoothing: antialiased; line-height: 1.6;
+    }
+    
+    /* Header & Typography */
+    header { padding: 40px 20px; text-align: center; background: radial-gradient(circle at 50% -20%, #222, transparent 70%); border-bottom: 1px solid #222; margin-bottom: 30px; }
+    h1, h2, h3 { color: #fff; text-transform: uppercase; letter-spacing: 1px; margin-top: 0; }
+    h1 { color: var(--primary); font-size: clamp(1.5rem, 4vw, 2.5rem); text-shadow: 0 0 20px rgba(249, 115, 22, 0.2); }
+    p { color: var(--text-muted); }
+    a { color: var(--primary); text-decoration: none; transition: 0.3s; }
 
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+    /* Containers */
+    .container, main { max-width: 1000px; margin: 0 auto; padding: 0 20px 40px; }
+    .panel-grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
 
-        header {
-            padding: 20px 10px;
-            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            flex-wrap: wrap;
-        }
+    /* Cards / Panels */
+    .panel, .demo-area, .note-box, .card { 
+        background: var(--card-bg); border: 1px solid #222; border-radius: var(--radius); padding: 25px; 
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3); margin-bottom: 20px; transition: transform 0.3s, border-color 0.3s;
+    }
+    .panel:hover, .card:hover { transform: translateY(-5px); border-color: var(--primary); }
+    
+    /* Inputs & Buttons */
+    input, select, textarea { 
+        background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 8px; width: 100%; 
+        font-family: inherit; margin-bottom: 15px; outline: none;
+    }
+    input:focus { border-color: var(--primary); }
+    
+    button, .btn-primary { 
+        background: var(--primary); color: #000; border: none; padding: 12px 24px; border-radius: 8px; 
+        font-weight: bold; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; justify-content: center;
+    }
+    button:hover, .btn-primary:hover { background: #fb923c; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(249, 115, 22, 0.3); }
+    
+    /* Specifics */
+    .badge-cloud { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 20px 0; }
+    .badge { background: #1a1a1a; color: var(--primary); border: 1px solid #333; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
+    
+    .back-home { display: inline-block; margin-top: 40px; color: var(--text-muted); border: 1px solid #333; padding: 10px 25px; border-radius: 30px; }
+    .back-home:hover { border-color: var(--primary); color: var(--primary); background: rgba(249, 115, 22, 0.1); }
+    
+    footer { text-align: center; padding: 40px; color: #444; font-size: 0.8rem; border-top: 1px solid #111; margin-top: 40px; }
+    
+    /* Utility */
+    .inline-code { font-family: monospace; background: #222; padding: 2px 6px; border-radius: 4px; color: #fb923c; }
+    
+    /* Fix for giant pixel art image in header */
+    header img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; }
+    
+    /* Fix for button vertical centering */
+    .cta-wrap { display: flex; align-items: center; justify-content: center; margin-top: auto; padding-top: 15px; }
+    
+    /* Ensure back button is styled if not already */
+    .back-home { display: inline-block; margin-top: 20px; color: #a0a0a0; border: 1px solid #333; padding: 10px 25px; border-radius: 30px; text-decoration: none; transition: 0.3s; }
+    .back-home:hover { border-color: #f97316; color: #f97316; background: rgba(249, 115, 22, 0.1); }
 
-        header .back-link {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            color: #333;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
 
-        header .back-link img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-            border: 2px solid #09f;
-        }
+    /* Back Button Styling */
+    .nav-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid #333; margin-bottom: 30px; }
+    .back-btn { 
+        display: inline-flex; align-items: center; gap: 8px; 
+        background: rgba(255,255,255,0.05); color: #e0e0e0; 
+        padding: 10px 20px; border-radius: 30px; text-decoration: none; 
+        font-size: 0.9rem; border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s ease; 
+    }
+    .back-btn:hover { 
+        background: rgba(249, 115, 22, 0.1); border-color: #f97316; color: #f97316; transform: translateX(-5px); 
+    }
+    
+    /* Flower Classifier Specifics */
+    #canvas-wrapper {
+        border: 2px dashed #333; border-radius: 12px; background: #0a0a0a;
+        display: flex; align-items: center; justify-content: center;
+        min-height: 300px; margin: 20px 0; position: relative; overflow: hidden;
+    }
+    #canvas-wrapper:hover { border-color: #f97316; background: rgba(249, 115, 22, 0.02); }
+    #imagePreview { max-width: 100%; max-height: 300px; display: none; border-radius: 8px; }
+    .classifier-container { text-align: center; }
+    .upload-btn { margin-top: 15px; }
 
-        header h1 {
-            margin: 0;
-            font-size: 1.8rem;
-            color: #09f;
-            width: 100%;
-            order: 2;
-        }
+</style>
 
-        .project-details {
-            background: #fff;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .project-details h2 {
-            color: #09f;
-            border-bottom: 2px solid #09f;
-            padding-bottom: 10px;
-        }
-
-        .project-details ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .project-details ul li {
-            background: #f0f8ff;
-            margin: 5px 0;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        .card {
-            background: #ffffff;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .controls {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 30px;
-        }
-
-        #resultado {
-            margin-top: 20px;
-            font-size: 1.5rem;
-            color: #1d3557;
-            background: #ffffff;
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        footer {
-            padding: 20px;
-            background: #2c3e50;
-            color: white;
-            text-align: center;
-        }
-
-        footer p {
-            margin: 0;
-            font-size: 0.8rem;
-        }
-
-        @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-            }
-
-            header .back-link {
-                position: static;
-                margin-bottom: 15px;
-            }
-
-            header h1 {
-                font-size: 1.5rem;
-                order: 0;
-            }
-        }
-    </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 <body>
-    <header>
-        <a href="../" class="back-link">
-            <img src="../pixelart_miguel.png" alt="Logo Miguel">
-            <span>Volver al Portfolio</span>
-        </a>
-        <h1>🧠 Red Neuronal Simple</h1>
-    </header>
+    
+  
+  <header style="background:none; border:none; padding: 20px 0; text-align: left;">
+    <div class="container" style="padding-bottom:0;">
+        <div class="nav-header">
+            <a href="../index.html#projects" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i> Volver al Portfolio
+            </a>
+            <div style="flex-grow:1;"></div> 
+        </div>
+        <h1 style="text-align:center; margin-top:10px;">Red Neuronal Simple</h1>
+    </div>
+  </header>
+
+
 
     <div class="container">
         <div class="project-details">

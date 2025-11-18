@@ -1,0 +1,18 @@
+# Ignore node_modules
+node_modules/
+
+# Ignore python cache
+__pycache__/
+*.pyc
+
+# Ignore environment files
+.env
+.venv/
+env/
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db
+
+# Ignore VS Code settings (optional, but good practice if personal)
+.vscode/
