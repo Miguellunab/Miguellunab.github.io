@@ -135,6 +135,9 @@
 
         <div class="classifier-container card">
             <h2>Sube una imagen de una flor</h2>
+            <div id="modelStatus" style="margin-bottom: 20px; padding: 15px; border-radius: 8px; background: rgba(249, 115, 22, 0.1); border: 1px solid #f97316; color: #f97316; text-align: center; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: bold;">
+                <i class="fa-solid fa-spinner fa-spin"></i> Cargando y optimizando el modelo... Por favor, espera.
+            </div>
             <div id="canvas-wrapper">
                 <canvas id="canvas"></canvas>
                 <img id="imagePreview" alt="Vista previa de la imagen">
@@ -166,6 +169,7 @@
         const resultsContainer = document.getElementById('results');
         const predictionsContainer = document.getElementById('predictions');
         const analyzeBtn = document.getElementById('analyzeBtn');
+        const modelStatus = document.getElementById('modelStatus');
         let model;
 
         async function loadModel() {
@@ -173,12 +177,38 @@
                 analyzeBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Cargando...';
                 analyzeBtn.disabled = true;
                 model = await tf.loadLayersModel('./mobilenetv2_tfjs/model.json');
-                console.log('Modelo cargado exitosamente');
-                analyzeBtn.innerHTML = '<i class="fa-solid fa-microchip"></i> Analizar';
-                analyzeBtn.disabled = false;
+                
+                // Calentamiento del modelo para compilar shaders y evitar congelamiento
+                setTimeout(async () => {
+                    try {
+                        tf.tidy(() => {
+                            model.predict(tf.zeros([1, 224, 224, 3]));
+                        });
+                        console.log('Modelo cargado y optimizado exitosamente');
+                        analyzeBtn.innerHTML = '<i class="fa-solid fa-microchip"></i> Analizar';
+                        analyzeBtn.disabled = false;
+                        
+                        modelStatus.innerHTML = '<i class="fa-solid fa-check-circle"></i> Modelo listo para usar';
+                        modelStatus.style.background = 'rgba(34, 197, 94, 0.1)';
+                        modelStatus.style.borderColor = '#22c55e';
+                        modelStatus.style.color = '#22c55e';
+                        
+                        // Ocultar el mensaje después de unos segundos
+                        setTimeout(() => {
+                            modelStatus.style.display = 'none';
+                        }, 3000);
+                    } catch (warmupError) {
+                        console.error('Error durante la optimización inicial:', warmupError);
+                    }
+                }, 100);
+
             } catch (error) {
                 console.error('Error al cargar el modelo: ', error);
                 analyzeBtn.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Error al cargar';
+                modelStatus.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Error al cargar el modelo';
+                modelStatus.style.background = 'rgba(239, 68, 68, 0.1)';
+                modelStatus.style.borderColor = '#ef4444';
+                modelStatus.style.color = '#ef4444';
             }
         }
 
@@ -251,7 +281,7 @@
                         return model.predict(normalized.expandDims(0));
                     }).data();
 
-                    const flowerClasses = ['Diente de león', 'Margarita', 'Tulipán', 'Girasol', 'Rosa'];
+                    const flowerClasses = ['Margarita', 'Diente de león', 'Rosa', 'Girasol', 'Tulipán'];
                     const results = Array.from(predictions)
                         .map((p, i) => ({ probability: p, className: flowerClasses[i] }))
                         .sort((a, b) => b.probability - a.probability)
