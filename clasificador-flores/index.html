@@ -251,7 +251,7 @@
                         return model.predict(normalized.expandDims(0));
                     }).data();
 
-                    const flowerClasses = ['Margarita', 'Diente de león', 'Rosa', 'Girasol', 'Tulipán'];
+                    const flowerClasses = ['Diente de león', 'Margarita', 'Tulipán', 'Girasol', 'Rosa'];
                     const results = Array.from(predictions)
                         .map((p, i) => ({ probability: p, className: flowerClasses[i] }))
                         .sort((a, b) => b.probability - a.probability)
