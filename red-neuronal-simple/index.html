@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Red Neuronal Simple - Portfolio de Miguel</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -158,18 +161,35 @@
 
         (async () => {
             console.log('Cargando modelo...');
-            modelo = await tf.loadLayersModel('model.json');
-            console.log('Modelo cargado.');
+            try {
+                // Se agrega un parámetro de tiempo para evitar caché agresivo del navegador
+                const timestamp = new Date().getTime();
+                modelo = await tf.loadLayersModel(`./model.json?v=${timestamp}`);
+                console.log('Modelo cargado.');
+                
+                // Warm up del modelo
+                tf.tidy(() => {
+                    modelo.predict(tf.tensor2d([[0]]));
+                });
+                
+                // Llamamos a la función inicial
+                cambiarCelsius();
+            } catch (error) {
+                console.error("Error cargando el modelo", error);
+                document.getElementById('resultado').innerHTML = 'Error al cargar el modelo.';
+            }
         })();
 
         function cambiarCelsius() {
-            const celsius = document.getElementById('celsius').value;
+            const celsius = parseFloat(document.getElementById('celsius').value);
             document.getElementById('lbl-celsius').innerHTML = celsius;
             if (modelo) {
-                const tensor = tf.tensor1d([parseInt(celsius)]);
+                // El modelo espera un tensor 2D de forma [batch_size, 1]
+                const tensor = tf.tensor2d([[celsius]]);
                 const prediccion = modelo.predict(tensor).dataSync();
                 const fahrenheit = Math.round(prediccion[0]);
                 document.getElementById('resultado').innerHTML = `${celsius} grados Celsius son ${fahrenheit} grados Fahrenheit`;
+                tensor.dispose(); // Buena práctica para evitar fugas de memoria
             } else {
                 document.getElementById('resultado').innerHTML = 'Intenta de nuevo en un momento...';
             }
