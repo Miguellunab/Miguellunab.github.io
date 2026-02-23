@@ -275,9 +275,8 @@
                             .toFloat();
 
                         // 2. Normalización de píxeles (crítico para la precisión del modelo)
-                        // Para MobileNetV2 estándar en Keras, el rango es de -1 a 1:
-                        const offset = tf.scalar(127.5);
-                        const normalized = tensor.sub(offset).div(offset);
+                        // Volvemos a la normalización de 0 a 1 que tenías originalmente
+                        const normalized = tensor.div(tf.scalar(255));
 
                         // 3. Añadir la dimensión extra del "batch" y predecir
                         return model.predict(normalized.expandDims(0));
