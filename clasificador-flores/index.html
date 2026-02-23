@@ -139,9 +139,12 @@
                 <canvas id="canvas"></canvas>
                 <img id="imagePreview" alt="Vista previa de la imagen">
             </div>
-            <input type="file" id="imageUpload" accept="image/*" class="hidden">
-            <button class="upload-btn" onclick="document.getElementById('imageUpload').click()">Seleccionar imagen</button>
-            <div id="results" class="hidden">
+            <input type="file" id="imageUpload" accept="image/*" class="hidden" style="display:none;">
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px; flex-wrap: wrap;">
+                <button class="upload-btn" onclick="document.getElementById('imageUpload').click()"><i class="fa-solid fa-image"></i> Seleccionar imagen</button>
+                <button id="analyzeBtn" class="upload-btn" style="display: none; background: #22c55e; color: #fff;"><i class="fa-solid fa-microchip"></i> Analizar</button>
+            </div>
+            <div id="results" class="hidden" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid #333;">
                 <h3>Resultados de la Predicción</h3>
                 <div id="predictions"></div>
             </div>
@@ -159,59 +162,106 @@
         const imageUpload = document.getElementById('imageUpload');
         const imagePreview = document.getElementById('imagePreview');
         const canvas = document.getElementById('canvas');
+        const canvasWrapper = document.getElementById('canvas-wrapper');
         const resultsContainer = document.getElementById('results');
         const predictionsContainer = document.getElementById('predictions');
+        const analyzeBtn = document.getElementById('analyzeBtn');
         let model;
 
         async function loadModel() {
             try {
+                analyzeBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Cargando...';
+                analyzeBtn.disabled = true;
                 model = await tf.loadLayersModel('./mobilenetv2_tfjs/model.json');
                 console.log('Modelo cargado exitosamente');
+                analyzeBtn.innerHTML = '<i class="fa-solid fa-microchip"></i> Analizar';
+                analyzeBtn.disabled = false;
             } catch (error) {
                 console.error('Error al cargar el modelo: ', error);
+                analyzeBtn.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Error al cargar';
             }
         }
 
-        imageUpload.addEventListener('change', async (event) => {
-            const file = event.target.files[0];
-            if (file) {
+        function handleImageFile(file) {
+            if (file && file.type.startsWith('image/')) {
                 const reader = new FileReader();
-                reader.onload = async (e) => {
+                reader.onload = (e) => {
                     imagePreview.src = e.target.result;
                     imagePreview.style.display = 'block';
                     canvas.style.display = 'none';
-                    resultsContainer.classList.remove('hidden');
-                    await predict(imagePreview);
+                    resultsContainer.style.display = 'none';
+                    analyzeBtn.style.display = 'inline-flex';
                 };
                 reader.readAsDataURL(file);
             }
+        }
+
+        imageUpload.addEventListener('change', (event) => {
+            handleImageFile(event.target.files[0]);
         });
 
-        async function predict(imgElement) {
+        // Eventos de Drag & Drop
+        canvasWrapper.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            canvasWrapper.style.borderColor = '#f97316';
+            canvasWrapper.style.background = 'rgba(249, 115, 22, 0.05)';
+        });
+
+        canvasWrapper.addEventListener('dragleave', (event) => {
+            event.preventDefault();
+            canvasWrapper.style.borderColor = '#333';
+            canvasWrapper.style.background = '#0a0a0a';
+        });
+
+        canvasWrapper.addEventListener('drop', (event) => {
+            event.preventDefault();
+            canvasWrapper.style.borderColor = '#333';
+            canvasWrapper.style.background = '#0a0a0a';
+            if (event.dataTransfer.files && event.dataTransfer.files.length > 0) {
+                handleImageFile(event.dataTransfer.files[0]);
+            }
+        });
+
+        analyzeBtn.addEventListener('click', async () => {
             if (!model) {
-                console.log('El modelo no está cargado todavía.');
+                alert('El modelo no está cargado todavía.');
                 return;
             }
 
-            const tensor = tf.browser.fromPixels(imgElement)
-                .resizeNearestNeighbor([224, 224])
-                .toFloat()
-                .expandDims();
+            analyzeBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Analizando...';
+            analyzeBtn.disabled = true;
 
-            const predictions = await model.predict(tensor).data();
-            const flowerClasses = ['Margarita', 'Diente de león', 'Rosa', 'Girasol', 'Tulipán'];
-            const results = Array.from(predictions)
-                .map((p, i) => ({ probability: p, className: flowerClasses[i] }))
-                .sort((a, b) => b.probability - a.probability)
-                .slice(0, 3);
+            setTimeout(async () => {
+                try {
+                    const tensor = tf.browser.fromPixels(imagePreview)
+                        .resizeNearestNeighbor([224, 224])
+                        .toFloat()
+                        .expandDims();
 
-            predictionsContainer.innerHTML = '';
-            results.forEach(result => {
-                const p = document.createElement('p');
-                p.innerText = `${result.className}: ${Math.round(result.probability * 100)}%`;
-                predictionsContainer.appendChild(p);
-            });
-        }
+                    const predictions = await model.predict(tensor).data();
+                    const flowerClasses = ['Margarita', 'Diente de león', 'Rosa', 'Girasol', 'Tulipán'];
+                    const results = Array.from(predictions)
+                        .map((p, i) => ({ probability: p, className: flowerClasses[i] }))
+                        .sort((a, b) => b.probability - a.probability)
+                        .slice(0, 3);
+
+                    predictionsContainer.innerHTML = '';
+                    results.forEach(result => {
+                        const p = document.createElement('p');
+                        p.innerText = `${result.className}: ${Math.round(result.probability * 100)}%`;
+                        predictionsContainer.appendChild(p);
+                    });
+
+                    resultsContainer.style.display = 'block';
+                } catch (error) {
+                    console.error('Error durante la predicción:', error);
+                    alert('Ocurrió un error al analizar la imagen.');
+                } finally {
+                    analyzeBtn.innerHTML = '<i class="fa-solid fa-microchip"></i> Analizar';
+                    analyzeBtn.disabled = false;
+                }
+            }, 100);
+        });
 
         window.onload = () => {
             loadModel();
