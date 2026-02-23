@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Clasificador de Flores - Portfolio de Miguel</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -176,7 +179,9 @@
             try {
                 analyzeBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Cargando...';
                 analyzeBtn.disabled = true;
-                model = await tf.loadLayersModel('./mobilenetv2_tfjs/model.json');
+                // Se agrega un parámetro de tiempo para evitar caché agresivo del navegador
+                const timestamp = new Date().getTime();
+                model = await tf.loadLayersModel(`./mobilenetv2_tfjs/model.json?v=${timestamp}`);
                 
                 // Calentamiento del modelo para compilar shaders y evitar congelamiento
                 setTimeout(async () => {
@@ -270,20 +275,25 @@
                             .toFloat();
 
                         // 2. Normalización de píxeles (crítico para la precisión del modelo)
-                        // La mayoría de tutoriales entrenan dividiendo entre 255 (rango 0 a 1)
-                        const normalized = tensor.div(tf.scalar(255));
-
-                        // NOTA: Si sigue fallando, comenta la línea de arriba y usa esta (rango -1 a 1, estándar en keras mobilenetv2):
-                        // const offset = tf.scalar(127.5);
-                        // const normalized = tensor.sub(offset).div(offset);
+                        // Para MobileNetV2 estándar en Keras, el rango es de -1 a 1:
+                        const offset = tf.scalar(127.5);
+                        const normalized = tensor.sub(offset).div(offset);
 
                         // 3. Añadir la dimensión extra del "batch" y predecir
                         return model.predict(normalized.expandDims(0));
                     }).data();
 
-                    const flowerClasses = ['Margarita', 'Diente de león', 'Rosa', 'Girasol', 'Tulipán'];
+                    // Mapeo explícito de las clases (invertidas según lo solicitado)
+                    const classMap = {
+                        0: 'Margarita',
+                        1: 'Diente de león',
+                        2: 'Rosa',
+                        3: 'Girasol',
+                        4: 'Tulipán'
+                    };
+
                     const results = Array.from(predictions)
-                        .map((p, i) => ({ probability: p, className: flowerClasses[i] }))
+                        .map((p, i) => ({ probability: p, className: classMap[i] || `Clase ${i}` }))
                         .sort((a, b) => b.probability - a.probability)
                         .slice(0, 3);
 
